@@ -1,0 +1,48 @@
+doctype 5
+html
+	head
+		title= title
+		link(href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css", rel="stylesheet")
+		link(rel='stylesheet', href='/stylesheets/lib/style.css')
+	body
+			#header.nav.navbar.navbar-default.navbar-static-top(role='navigation')
+				.navbar-header
+					button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
+						span.sr-only Toggle navigation
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.navbar-brand(href='/') RogueLife
+				-if(typeof user == 'undefined')
+					.loginStatus.pull-right
+						a(href="/login") Login / Sign Up
+				-else
+					.loginStatus.pull-right
+						// place user avatar img here
+						span Welcome, #{user.charName}!
+						br
+						a(href="/logout") Logout
+				.collapse.navbar-collapse.navbar-ex1-collapse
+					ul.nav.navbar-nav
+						li
+							a(href='#') Link
+						li
+							a(href='#') Link
+						li.dropdown
+							a.dropdown-toggle(href='#', data-toggle='dropdown')
+								| Dropdown
+								b.caret
+							ul.dropdown-menu.navarDropdown
+								li
+									a(href='#') Action
+								li
+									a(href='#') Another action
+								li
+									a(href='#') Something else here
+								li
+									a(href='#') Separated link
+								li
+									a(href='#') One more separated link
+
+		block content
+		block login

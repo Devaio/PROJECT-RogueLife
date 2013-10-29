@@ -1,0 +1,41 @@
+extends common/header
+
+block login
+
+	form.signIn.container(role='form')
+		h2 Log In to RogueLife!
+		a.pull-right(data-toggle="modal", href="#signUpModal") Not a member yet?
+		.form-group
+				label.col-2.control-label(for='inputEmail1') Email
+				.col-4
+					input#inputEmail1.form-control(type='email', placeholder='Email')
+			.form-group
+				label.col-2.control-label(for='inputPassword1') Password
+				.col-4
+					input#inputPassword1.form-control(type='password', placeholder='Password')
+			.form-group
+				.col-offset-2.col-10
+					button.btn.btn-info.pull-right.signInButton(type='submit') Sign in
+
+	#signUpModal.modal.fade
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4.modal-title Sign Up
+				.modal-body
+					.form-group
+						label.col-2.control-label(for='inputEmail1') Email
+						.col-4
+							input#inputEmail1.form-control(type='email', placeholder='Email')
+					.form-group
+						label.col-2.control-label(for='inputPassword1') Password
+						.col-4
+							input#inputPassword1.form-control(type='password', placeholder='Password')
+				.modal-footer
+					.steamSignIn.pull-left
+					button.btn.btn-info.signUpButton(type='submit', data-dismiss='modal') Sign Up
+
+
+
+	include common/footer

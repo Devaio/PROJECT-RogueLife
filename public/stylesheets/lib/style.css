@@ -1,0 +1,51 @@
+body {
+  font: 14px "Cambria", Helvetica, Arial, sans-serif;
+  padding-bottom: 70px;
+}
+.navbar {
+  padding: 5px 5px 0px 0px;
+}
+#footer {
+  position: fixed;
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: #adac90;
+}
+#header {
+  background-color: #90adac;
+}
+.navbar-toggle {
+  background-color: rgba(50,50,50,0.5);
+}
+.steamSignIn {
+  background: url("/images/steamSignOn.png");
+  width: 118px;
+  height: 51px;
+  display: inline-block;
+}
+.signIn {
+  min-width: 50%;
+  max-width: 70%;
+}
+#inputEmail1,
+#inputPassword1 {
+  height: 50px;
+}
+.dropdown-menu li > a:hover,
+.dropdown-menu li > a:focus,
+.dropdown-submenu:hover > a {
+  background-color: rgba(50,50,50,0.5);
+  -webkit-transition: all 0.2s ease-in-out;
+}
+@font-face {
+  font-family: megapix;
+  src: url("/stylesheets/fonts/megapix.ttf");
+}
+.mainLogo {
+  font-family: megapix;
+  font-size: 8em;
+}
+.navbar-brand {
+  font-family: megapix;
+  font-size: 2em;
+}
