@@ -39,7 +39,7 @@ body {
 }
 @font-face {
   font-family: megapix;
-  src: url("/stylesheets/fonts/megapix.ttf");
+  src: url("/stylesheets/fonts/megapix-webfont.ttf");
 }
 .mainLogo {
   font-family: megapix;
