@@ -30,7 +30,7 @@ app.use express.static(path.join(__dirname, '/../public'))
 app.use passport.initialize()
 app.use passport.session()
 #Connect Mongoose
-mongoose.connect 'mongodb://localhost/roguelife'
+mongoose.connect 'mongodb://<dbuser>:<dbpassword>@ds053148.mongolab.com:53148/heroku_app18992266'
 #set up user documents
 User = mongoose.model 'User', {
 	steamName : String,
@@ -56,8 +56,8 @@ passport.deserializeUser (obj, done) ->
 
 # Setting Up OpenID for Steam Auth
 passport.use new SteamStrategy {
-	returnURL: 'http://localhost:3000/auth/steam/return',
-	realm: 'http://localhost:3000/'
+	returnURL: 'http://roguelife.herokuapp.com/auth/steam/return',
+	realm: 'http://roguelife.herokuapp.com/'
 	},
   (identifier, done) ->
     User.findByOpenID { openId: identifier }, (err, user) ->
