@@ -37,15 +37,18 @@ body {
   background-color: rgba(50,50,50,0.5);
   -webkit-transition: all 0.2s ease-in-out;
 }
-@font-face {
-  font-family: megapix;
-  src: url("/stylesheets/fonts/megapix-webfont.ttf");
-}
 .mainLogo {
-  font-family: megapix;
+  font-family: megapixelregular;
   font-size: 8em;
 }
 .navbar-brand {
-  font-family: megapix;
+  font-family: megapixelregular;
   font-size: 2em;
+}
+@font-face {
+  font-family: 'megapixelregular';
+  src: url("/stylesheets/fonts/megapix-webfont.eot");
+  src: url("/stylesheets/fonts/megapix-webfont.eot?#iefix") format('embedded-opentype'), url("/stylesheets/fonts/megapix-webfont.woff") format('woff'), url("/stylesheets/fonts/megapix-webfont.ttf") format('truetype'), url("/stylesheets/fonts/megapix-webfont.svg#megapixelregular") format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
