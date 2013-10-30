@@ -59,11 +59,12 @@ passport.deserializeUser (obj, done) ->
 
 # Setting Up OpenID for Steam Auth
 passport.use new SteamStrategy {
-	returnURL: 'http://roguelife.herokuapp.com/auth/steam/return',
-	realm: 'http://roguelife.herokuapp.com/'
+	returnURL: 'http://roguelife.herokuapp.com/auth/steam/return', 
+	realm: 'http://roguelife.herokuapp.com/' 
 	},
   (identifier, done) ->
     User.findByOpenID { openId: identifier }, (err, user) ->
+    	console.log identifier
     	return done(err, user);
     return
 
@@ -93,7 +94,7 @@ app.get '/auth/steam/callback', passport.authenticate 'steam', {failureRedirect 
 	return
 app.get '/auth/steam/return', (req, res) ->
 	console.log req.query
-	res.send req.query
+	res.render '/' # {steamLogin : req.query}
 	return
 
 app.post '/signup', (req, res) ->
