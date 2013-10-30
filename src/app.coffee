@@ -30,7 +30,8 @@ app.use express.static(path.join(__dirname, '/../public'))
 app.use passport.initialize()
 app.use passport.session()
 #Connect Mongoose
-mongoose.connect 'mongodb://<dbuser>:<dbpassword>@ds053148.mongolab.com:53148/heroku_app18992266'
+MongoURI = global.process.env.MONGOLAB_URI ? 'mongodb://localhost/roguelife'
+mongoose.connect MongoURI
 #set up user documents
 User = mongoose.model 'User', {
 	steamName : String,
