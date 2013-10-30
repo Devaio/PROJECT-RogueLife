@@ -22,6 +22,7 @@ body {
   width: 118px;
   height: 51px;
   display: inline-block;
+  cursor: pointer;
 }
 .signIn {
   min-width: 50%;
@@ -51,4 +52,8 @@ body {
   src: url("/stylesheets/fonts/megapix-webfont.eot?#iefix") format('embedded-opentype'), url("/stylesheets/fonts/megapix-webfont.woff") format('woff'), url("/stylesheets/fonts/megapix-webfont.ttf") format('truetype'), url("/stylesheets/fonts/megapix-webfont.svg#megapixelregular") format('svg');
   font-weight: normal;
   font-style: normal;
+}
+.signUpButton {
+  position: relative;
+  top: 55px;
 }

@@ -6,13 +6,13 @@ block login
 		h2 Log In to RogueLife!
 		a.pull-right(data-toggle="modal", href="#signUpModal") Not a member yet?
 		.form-group
-				label.col-2.control-label(for='inputEmail1') Email
+				label.col-2.control-label(for='inputUserName1') Username
 				.col-4
-					input#inputEmail1.form-control(type='email', placeholder='Email')
+					input#inputUserName1.form-control(type='text', name='usernameLogin', placeholder='Username', required)
 			.form-group
 				label.col-2.control-label(for='inputPassword1') Password
 				.col-4
-					input#inputPassword1.form-control(type='password', placeholder='Password')
+					input#inputPassword1.form-control(type='password', name='passwordLogin', placeholder='Password', required)
 			.form-group
 				.col-offset-2.col-10
 					button.btn.btn-info.pull-right.signInButton(type='submit') Sign in
@@ -24,17 +24,24 @@ block login
 					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
 					h4.modal-title Sign Up
 				.modal-body
-					.form-group
-						label.col-2.control-label(for='inputEmail1') Email
-						.col-4
-							input#inputEmail1.form-control(type='email', placeholder='Email')
-					.form-group
-						label.col-2.control-label(for='inputPassword1') Password
-						.col-4
-							input#inputPassword1.form-control(type='password', placeholder='Password')
+					form.signUp
+						.form-group
+							label.col-2.control-label(for='inputEmail2') Email
+							.col-4
+								input#inputEmail2.form-control(type='email', name='emailSignup', placeholder='Email', required)
+						.form-group
+							label.col-2.control-label(for='inputUserName2') Username
+							.col-4
+								input#inputUserName2.form-control(type='text',name='usernameSignup', placeholder='Username', required)
+						.form-group
+							label.col-2.control-label(for='inputPassword2') Password
+							.col-4
+								input#inputPassword2.form-control(type='password',name='passwordSignup', placeholder='Password', required)
+						button.btn.btn-info.pull-right.signUpButton(type='submit') Sign Up
 				.modal-footer
-					.steamSignIn.pull-left
-					button.btn.btn-info.signUpButton(type='submit', data-dismiss='modal') Sign Up
+					a(href='/auth/steam')
+						.steamSignIn.pull-left
+					
 
 
 

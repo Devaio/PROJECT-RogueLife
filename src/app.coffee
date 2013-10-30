@@ -36,6 +36,8 @@ mongoose.connect MongoURI
 User = mongoose.model 'User', {
 	steamName : String,
 	charName : String,
+	email : String,
+	password : String,
 	description : String,
 	experience : Number
 }	
@@ -85,8 +87,29 @@ server.listen app.get('port'), () ->
 
 app.get '/auth/steam', passport.authenticate 'steam' , (req, res) ->
 	return
+
 app.get '/auth/steam/callback', passport.authenticate 'steam', {failureRedirect : '/login'}, (req, res) ->
 	res.redirect('/')
 	return
+app.get '/auth/steam/return', (req, res) ->
+	console.log req.query
+	return
 
-
+app.post '/signup', (req, res) ->
+	console.log req.body
+	user = new User {
+		steamName : 'Not Linked'
+		email : req.body.emailSignup,
+		password : req.body.passwordSignup,
+		charName : req.body.usernameSignup,
+		description : ' the Ambitious',
+		experience : 0 
+	}
+	console.log user._id
+	user.save (err) ->
+		if err
+			res.send err
+		else
+			User.findById user['_id'], (err, userData) ->
+				res.send {success : "Success!", user : userData}
+	return
