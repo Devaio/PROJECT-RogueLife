@@ -88,12 +88,8 @@ server.listen app.get('port'), () ->
 app.get '/auth/steam', passport.authenticate 'steam' , (req, res) ->
 	return
 
-app.get '/auth/steam/callback', passport.authenticate 'steam', {failureRedirect : '/login'}, (req, res) ->
-	res.redirect('/')
-	return
-app.get '/auth/steam/return', (req, res) ->
-	console.log req.query
-	res.render '/', {steamLogin : req.query}
+app.get '/auth/steam/return', passport.authenticate 'steam', {failureRedirect : '/login'}, (req, res) ->
+	res.redirect '/', {steamLogin : req.query}
 	return
 
 app.post '/signup', (req, res) ->
