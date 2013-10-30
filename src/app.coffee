@@ -64,7 +64,6 @@ passport.use new SteamStrategy {
 	},
   (identifier, done) ->
     User.findByOpenID { openId: identifier }, (err, user) ->
-    	console.log 'IDENTY', identifier
     	return done(err, user);
     return
 
@@ -94,7 +93,7 @@ app.get '/auth/steam/callback', passport.authenticate 'steam', {failureRedirect 
 	return
 app.get '/auth/steam/return', (req, res) ->
 	console.log req.query
-	res.render '/' # {steamLogin : req.query}
+	res.render '/', {steamLogin : req.query}
 	return
 
 app.post '/signup', (req, res) ->
