@@ -94,6 +94,12 @@ app.get '/auth/steam/', passport.authenticate('steam', {failureRedirect : '/logi
 app.get '/auth/steam/callback',passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
 	res.render '/', {steamLogin : req.query}
 	return
+	
+app.get '/auth/steam/return', (req, res) ->
+	console.log req.query
+	res.send req.query
+	#res.render '/' # {steamLogin : req.query}
+	return
 
 app.get '/logout', (req, res) ->
 	req.logout()
