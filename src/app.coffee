@@ -86,10 +86,10 @@ server = http.createServer(app)
 server.listen app.get('port'), () ->
   console.log 'Express server listening on port ' + app.get('port')
 
-app.post '/auth/steam', passport.authenticate 'steam' , (req, res) ->
+app.get '/auth/steam', passport.authenticate 'steam' , (req, res) ->
 	return
 
-app.post '/auth/steam/return', passport.authenticate 'steam', {successRedirect : '/', failureRedirect : '/login'}, (req, res) ->
+app.get '/auth/steam/return', passport.authenticate 'steam', {successRedirect : '/', failureRedirect : '/login'}, (req, res) ->
 	res.redirect '/', {steamLogin : req.query}
 	return
 
