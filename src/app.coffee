@@ -30,7 +30,7 @@ app.use express.static(path.join(__dirname, '/../public'))
 app.use passport.initialize()
 app.use passport.session()
 #Connect Mongoose
-mongoose.connect 'mongodb://localhost/roguelife'
+# mongoose.connect 'mongodb://localhost/roguelife'
 #set up user documents
 User = mongoose.model 'User', {
 	steamName : String,
