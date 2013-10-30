@@ -85,16 +85,21 @@ server = http.createServer(app)
 server.listen app.get('port'), () ->
   console.log 'Express server listening on port ' + app.get('port')
 
-app.get '/auth/steam', passport.authenticate 'steam' , (req, res) ->
+# Steam Authentication
+app.get '/auth/steam/', passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
+	res.redirect '/'
 	return
 
-app.get '/auth/steam/callback', passport.authenticate 'steam', {failureRedirect : '/login'}, (req, res) ->
-	res.redirect('/')
-	return
-app.get '/auth/steam/return', (req, res) ->
-	console.log req.query
+# {steamLogin : req.query} in return
+app.get '/auth/steam/return',passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
 	res.render '/', {steamLogin : req.query}
 	return
+
+app.get '/logout', (req, res) ->
+	req.logout()
+	res.redirect '/'
+	return
+#End Steam Authentication
 
 app.post '/signup', (req, res) ->
 	console.log req.body
