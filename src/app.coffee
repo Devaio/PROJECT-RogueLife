@@ -93,6 +93,7 @@ app.get '/auth/steam/callback', passport.authenticate 'steam', {failureRedirect 
 	return
 app.get '/auth/steam/return', (req, res) ->
 	console.log req.query
+	res.send req.query
 	return
 
 app.post '/signup', (req, res) ->
