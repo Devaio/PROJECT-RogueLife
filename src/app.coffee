@@ -64,7 +64,7 @@ passport.use new SteamStrategy {
 	},
   (identifier, done) ->
     User.findByOpenID { openId: identifier }, (err, user) ->
-    	console.log identifier
+    	console.log 'IDENTY', identifier
     	return done(err, user);
     return
 
