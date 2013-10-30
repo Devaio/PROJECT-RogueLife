@@ -1,0 +1,24 @@
+extends common/header
+block dash
+	.row-fluid.container
+		h3.col-xs-10.offset-2 The story so far...
+	hr
+	.row-fluid.container
+		.completedTasks.col-xs-3
+			.listHeading
+				h4 Completed!
+			ul.activityList.completedList
+				include dashTemplate.html
+				li first task
+					.taskDescription
+						p This is what you did!
+					.taskStatus
+				
+
+
+
+
+
+
+
+	include common/footer

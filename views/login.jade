@@ -8,11 +8,11 @@ block login
 		.form-group
 				label.col-2.control-label(for='inputUserName1') Username
 				.col-4
-					input#inputUserName1.form-control(type='text', name='usernameLogin', placeholder='Username', required)
+					input#inputUserName1.form-control(type='text', name='username', placeholder='Username', required)
 			.form-group
 				label.col-2.control-label(for='inputPassword1') Password
 				.col-4
-					input#inputPassword1.form-control(type='password', name='passwordLogin', placeholder='Password', required)
+					input#inputPassword1.form-control(type='password', name='password', placeholder='Password', required)
 			.form-group
 				.col-offset-2.col-10
 					button.btn.btn-info.pull-right.signInButton(type='submit') Sign in
@@ -28,15 +28,15 @@ block login
 						.form-group
 							label.col-2.control-label(for='inputEmail2') Email
 							.col-4
-								input#inputEmail2.form-control(type='email', name='emailSignup', placeholder='Email', required)
+								input#inputEmail2.form-control(type='email', name='email', placeholder='Email', required)
 						.form-group
 							label.col-2.control-label(for='inputUserName2') Username
 							.col-4
-								input#inputUserName2.form-control(type='text',name='usernameSignup', placeholder='Username', required)
+								input#inputUserName2.form-control(type='text', name='username', placeholder='Username', required)
 						.form-group
 							label.col-2.control-label(for='inputPassword2') Password
 							.col-4
-								input#inputPassword2.form-control(type='password',name='passwordSignup', placeholder='Password', required)
+								input#inputPassword2.form-control(type='password', name='password', placeholder='Password', required)
 						button.btn.btn-info.pull-right.signUpButton(type='submit') Sign Up
 				.modal-footer
 					a(href='/auth/steam')

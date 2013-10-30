@@ -57,3 +57,6 @@ body {
   position: relative;
   top: 55px;
 }
+.completedTasks {
+  border: thick #808080 inset;
+}

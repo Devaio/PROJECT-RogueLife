@@ -1,13 +1,27 @@
 $ ->
+	dataSource = $('#completed-tasks').html();
+	searchTemplate = Handlebars.compile(dataSource)
+	$completed = $('#.completedList')
+
+
+
+
+
 	$('.signUp').on 'submit', (e) ->
 		e.preventDefault()
-		console.log $(@).serialize()
 		$.post "/signup", $(@).serialize(), (data) ->
-			console.log data
 			return
 		$('#signUpModal').modal 'toggle'
 		return
 
+	$('.signIn').on 'submit', (e) ->
+		e.preventDefault()
+		$.post '/signin', $(@).serialize(), (data) ->
+			console.log data
+			$('input').val('')
+			return
+		.fail(console.log 'Failed')
+		return
 
 
 
