@@ -91,7 +91,7 @@ app.get '/auth/steam/', passport.authenticate('steam', {failureRedirect : '/logi
 	return
 
 # {steamLogin : req.query} in return
-app.get '/auth/steam/return',passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
+app.get '/auth/steam/callback',passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
 	res.render '/', {steamLogin : req.query}
 	return
 
