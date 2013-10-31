@@ -2,16 +2,23 @@
 (function() {
   $(function() {
     $('.signUp').on('submit', function(e) {
+      var serialData;
       e.preventDefault();
-      $.post("/signup", $(this).serialize(), function(data) {});
+      serialData = $(this).serialize();
+      $.post("/signup", serialData, function(data) {
+        console.log(data);
+      });
       $('#signUpModal').modal('toggle');
     });
     $('.signIn').on('submit', function(e) {
+      var serialData;
       e.preventDefault();
-      $.post('/signin', $(this).serialize(), function(data) {
-        console.log(data);
-        $('input').val('');
-      }).fail(console.log('Failed'));
+      serialData = $(this).serialize();
+      console.log('in', serialData);
+      $.post('/signin', serialData, function(data) {
+        console.log('out', serialData);
+        window.location = data.redirect;
+      });
     });
   });
 

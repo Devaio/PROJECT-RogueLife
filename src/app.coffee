@@ -13,7 +13,6 @@ LocalStrategy = require("passport-local").Strategy
 OpenIDStrategy = require('passport-openid').Strategy
 SteamStrategy = require('passport-steam').Strategy
 mongoose = require 'mongoose'
-db = require './db'
 app = express();
 
 # all environments
@@ -21,16 +20,17 @@ app.set 'port', process.env.PORT || 3000
 app.set 'views', __dirname + '/../views'
 app.set 'view engine', 'jade'
 app.use express.favicon()
+app.use passport.initialize()
+app.use passport.session()
 app.use express.logger('dev')
 app.use express.bodyParser()
 app.use express.methodOverride()
 app.use express.cookieParser('your secret here')
-app.use express.session( { secret : 'Soilwork'} )
+app.use express.session()
 app.use app.router
 app.use require('stylus').middleware(__dirname + '/../public')
 app.use express.static(path.join(__dirname, '/../public'))
-app.use passport.initialize()
-app.use passport.session()
+
 
 server = http.createServer(app)
 
@@ -49,25 +49,21 @@ mongoose.connect MongoURI
 # 		User.findByOpenID { openId: identifier }, (err, user) ->
 # 		return done(err, user);
 
-#Setting Up Local Auth
-passport.use new LocalStrategy (username, password, done) ->
-	User.findOne {username : username }, (err, user) ->
-		if err
-			console.log 'err', err
-			return done(err)
-		if !user
-			console.log '!user', user
-			return done(null, false)
-		if user.password isnt password
-			console.log 'pass', user.password, password
-			return done(null, false)
-		return
-	return
+Character = mongoose.model 'Character', {
+    username : {type : String, required : true, unique : true},
+    email : {type: String, required : true, unique : true},
+    password : {type : String, required : true},
+    health : {type : Number, default : 100},
+    mana : {type : Number, default : 50},
+    experience : {type : Number, default : 0},
+    tasks : {type: Array, default : []}
+}
+
 #Ensure User is Authenticated
-app.isAuthenticated = (request, response, next) ->
-    if request.isAuthenticated()
+app.isAuthenticated = (req, res, next) ->
+    if req.isAuthenticated()
         return next()
-    response.redirect "/login"
+    res.redirect "/login"
     return
 
 ensureAuthenticated = (req, res, next) ->
@@ -82,10 +78,25 @@ passport.serializeUser (user, done) ->
 	return
 
 passport.deserializeUser (id, done) ->
-	User.findById id, (err, user) ->
+	Character.findById id, (err, user) ->
 		done(err, user)
 		return
 	return
+
+
+#Setting Up Local Auth
+passport.use new LocalStrategy (username, password, done) ->
+	Character.findOne {username : username }, (err, user) ->
+		console.log 'LOCAL', user
+		if err
+			return done(err)
+		if !user
+			return done(null, false, {message : 'Incorrect username'})
+		if password isnt user.password
+			return done(null, false, {message : 'Incorrect password'})
+		return
+	return
+
 
 # development only
 if 'development' == app.get('env') 
@@ -132,27 +143,20 @@ app.get '/login', (req, res) ->
 
 app.post '/signin', passport.authenticate('local'), (req, res) ->
 	console.log 'req.user: ', req.user
-	# db.User.find {_id : req.user._id}
-	res.send '/'
-	return
+	res.send {redirect : '/dash'}
 
 
 
 app.post '/signup', (req, res) ->
 	console.log 'reqBody', req.body
-	user = new db.User {
+	newUser = new Character {
 		email : req.body.email,
 		password : req.body.password,
 		username : req.body.username
 	}
-	console.log 'UserID', user._id
-	user.save (err) ->
-		if err
-			res.send err
-		else
-			User.findById user['_id'], (err, userData) ->
-				res.render '/'+username, {user : userData}
-				return
+	newUser.save()
+	console.log 'UserID', newUser._id
+	res.send 'success!'
 	return
 
 

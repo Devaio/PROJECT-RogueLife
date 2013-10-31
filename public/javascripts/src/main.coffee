@@ -9,18 +9,21 @@ $ ->
 
 	$('.signUp').on 'submit', (e) ->
 		e.preventDefault()
-		$.post "/signup", $(@).serialize(), (data) ->
+		serialData = $(@).serialize()
+		$.post "/signup", serialData, (data) ->
+			console.log data
 			return
 		$('#signUpModal').modal 'toggle'
 		return
 
 	$('.signIn').on 'submit', (e) ->
 		e.preventDefault()
-		$.post '/signin', $(@).serialize(), (data) ->
-			console.log data
-			$('input').val('')
+		serialData = $(@).serialize()
+		console.log 'in', serialData
+		$.post '/signin', serialData, (data) ->
+			console.log 'out', serialData
+			window.location = data.redirect
 			return
-		.fail(console.log 'Failed')
 		return
 
 
