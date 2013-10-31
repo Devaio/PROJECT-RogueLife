@@ -7,11 +7,13 @@ routes = require './../routes'
 user = require './../routes/user'
 http = require 'http'
 path = require 'path'
-passport = require "passport"
+passport = require 'passport'
+fs = require 'fs'
 LocalStrategy = require("passport-local").Strategy
 OpenIDStrategy = require('passport-openid').Strategy
 SteamStrategy = require('passport-steam').Strategy
 mongoose = require 'mongoose'
+db = require './db'
 app = express();
 
 # all environments
@@ -35,39 +37,9 @@ server = http.createServer(app)
 server.listen app.get('port'), () ->
   console.log 'Express server listening on port ' + app.get('port')
 
-#Connect Mongoose
 MongoURI = process.env.MONGOLAB_URI ? 'mongodb://localhost/roguelife'
 mongoose.connect MongoURI
 
-#set up user documents
-User = mongoose.model 'User', {
-	steamName : String,
-	username : String,
-	email : String,
-	password : String,
-	description : String,
-	experience : Number,
-	tasks : Array
-	#taskName : taskDescription
-}	
-
-#Ensure User is Authenticated
-ensureAuthenticated = (req, res, next) ->
-	if req.isAuthenticated()
-		return next
-	res.redirect('/login')
-	return
-
-#Passport needs to serialize to support persistent login sessions
-passport.serializeUser (user, done) ->
-	done null, user.id
-	return
-
-passport.deserializeUser (id, done) ->
-	User.findById id, (err, user) ->
-		done(err, user)
-		return
-	return
 
 # #Setting Up OpenID for Steam Auth
 # passport.use new SteamStrategy {
@@ -91,6 +63,29 @@ passport.use new LocalStrategy (username, password, done) ->
 			return done(null, false)
 		return
 	return
+#Ensure User is Authenticated
+app.isAuthenticated = (request, response, next) ->
+    if request.isAuthenticated()
+        return next()
+    response.redirect "/login"
+    return
+
+ensureAuthenticated = (req, res, next) ->
+	if req.isAuthenticated()
+		return next
+	res.redirect('/login')
+	return
+
+#Passport needs to serialize to support persistent login sessions
+passport.serializeUser (user, done) ->
+	done null, user.id
+	return
+
+passport.deserializeUser (id, done) ->
+	User.findById id, (err, user) ->
+		done(err, user)
+		return
+	return
 
 # development only
 if 'development' == app.get('env') 
@@ -112,11 +107,24 @@ app.get '/login', (req, res) ->
 	res.render 'login'
 	return
 
-app.get '/dash', (req,res) ->
+
+# # add this :  app.isAuthenticated,
+# app.get '/:username', (req,res) ->
+# 	db.User.find {username : req.param.username}, (err, data) ->
+# 		console.log 'reqUser', req.param.username
+# 		if err
+# 			console.log 'error', err
+# 		else
+# 			console.log 'app', data
+# 			res.render 'dash', {username : req.param.username}
+# 	return
+
+app.get '/dash', (req, res) ->
 	res.render 'dash'
+
+app.get '/login', (req, res) ->
+	res.render 'login'
 	return
-
-
 
 
 
@@ -124,31 +132,27 @@ app.get '/dash', (req,res) ->
 
 app.post '/signin', passport.authenticate('local'), (req, res) ->
 	console.log 'req.user: ', req.user
-	req.login user, (err) ->
-		if err
-			return next(err)
-		return res.redirect '/'
+	# db.User.find {_id : req.user._id}
+	res.send '/'
 	return
 
 
 
 app.post '/signup', (req, res) ->
-	console.log req.body
-	user = new User {
-		steamName : 'Not Linked'
+	console.log 'reqBody', req.body
+	user = new db.User {
 		email : req.body.email,
 		password : req.body.password,
-		username : req.body.username,
-		description : ' the Ambitious',
-		experience : 0 
+		username : req.body.username
 	}
-	console.log user._id
+	console.log 'UserID', user._id
 	user.save (err) ->
 		if err
 			res.send err
 		else
 			User.findById user['_id'], (err, userData) ->
-				res.send {success : "Success!", user : userData}
+				res.render '/'+username, {user : userData}
+				return
 	return
 
 

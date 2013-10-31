@@ -29,7 +29,8 @@ body {
   max-width: 70%;
 }
 #inputEmail1,
-#inputPassword1 {
+#inputPassword1,
+#inputUserName1 {
   height: 50px;
 }
 .dropdown-menu li > a:hover,
@@ -57,6 +58,28 @@ body {
   position: relative;
   top: 55px;
 }
-.completedTasks {
+.completedTasks,
+.currentTasks,
+.gameTasks {
   border: thick #808080 inset;
+  margin-right: 8%;
+}
+.healthBar,
+.manaBar,
+.expBar {
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: solid #808080;
+  height: 25px;
+  color: #fff;
+}
+.healthBar {
+  background-color: #f13939;
+  margin-right: 8.2%;
+}
+.manaBar {
+  background-color: #2929cc;
+}
+.expBar {
+  color: #000;
 }

@@ -1,7 +1,7 @@
 $ ->
-	dataSource = $('#completed-tasks').html();
-	searchTemplate = Handlebars.compile(dataSource)
-	$completed = $('#.completedList')
+	# dataSource = $('#completed-tasks').html();
+	# searchTemplate = Handlebars.compile(dataSource)
+	# $completed = $('#completedList')
 
 
 
