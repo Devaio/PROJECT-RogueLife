@@ -14,9 +14,9 @@
       var serialData;
       e.preventDefault();
       serialData = $(this).serialize();
-      console.log('in', serialData);
+      console.log('outsidepost', serialData);
       $.post('/signin', serialData, function(data) {
-        console.log('out', serialData);
+        console.log('insidepost', serialData);
         window.location = data.redirect;
       });
     });

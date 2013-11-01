@@ -19,9 +19,9 @@ $ ->
 	$('.signIn').on 'submit', (e) ->
 		e.preventDefault()
 		serialData = $(@).serialize()
-		console.log 'in', serialData
+		console.log 'outsidepost', serialData
 		$.post '/signin', serialData, (data) ->
-			console.log 'out', serialData
+			console.log 'insidepost', serialData
 			window.location = data.redirect
 			return
 		return

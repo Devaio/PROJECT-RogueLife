@@ -15,6 +15,7 @@ SteamStrategy = require('passport-steam').Strategy
 mongoose = require 'mongoose'
 app = express();
 
+
 # all environments
 app.set 'port', process.env.PORT || 3000
 app.set 'views', __dirname + '/../views'
@@ -41,48 +42,30 @@ MongoURI = process.env.MONGOLAB_URI ? 'mongodb://localhost/roguelife'
 mongoose.connect MongoURI
 
 
-# #Setting Up OpenID for Steam Auth
-# passport.use new SteamStrategy {
-# 	returnURL: 'http://'+process.env.domain+'/auth/steam/return', 
-# 	realm: 'http://'+process.env.domain+'/' 
-# 	},(identifier, done) ->
-# 		User.findByOpenID { openId: identifier }, (err, user) ->
-# 		return done(err, user);
-
-Character = mongoose.model 'Character', {
-    username : {type : String, required : true, unique : true},
-    email : {type: String, required : true, unique : true},
-    password : {type : String, required : true},
-    health : {type : Number, default : 100},
-    mana : {type : Number, default : 50},
-    experience : {type : Number, default : 0},
-    tasks : {type: Array, default : []}
-}
-
+### PASSPORT ###
 #Ensure User is Authenticated
 app.isAuthenticated = (req, res, next) ->
-    if req.isAuthenticated()
-        return next()
-    res.redirect "/login"
-    return
+	if req.isAuthenticated()
+		return next()
+	res.redirect '/login'
+	
 
 ensureAuthenticated = (req, res, next) ->
 	if req.isAuthenticated()
 		return next
-	res.redirect('/login')
-	return
+	res.redirect '/login' 
+	
 
 #Passport needs to serialize to support persistent login sessions
 passport.serializeUser (user, done) ->
 	done null, user.id
-	return
+	
 
 passport.deserializeUser (id, done) ->
 	Character.findById id, (err, user) ->
 		done(err, user)
-		return
-	return
-
+		
+	
 
 #Setting Up Local Auth
 passport.use new LocalStrategy (username, password, done) ->
@@ -94,8 +77,30 @@ passport.use new LocalStrategy (username, password, done) ->
 			return done(null, false, {message : 'Incorrect username'})
 		if password isnt user.password
 			return done(null, false, {message : 'Incorrect password'})
-		return
-	return
+		return done(null, user)
+	
+
+# #Setting Up passport for Steam Auth
+# passport.use new SteamStrategy {
+# 	returnURL: 'http://'+process.env.domain+'/auth/steam/return', 
+# 	realm: 'http://'+process.env.domain+'/' 
+# 	},(identifier, done) ->
+# 		User.findByOpenID { openId: identifier }, (err, user) ->
+# 		return done(err, user);
+
+Character = mongoose.model 'Character', {
+	username : {type : String, required : true, unique : true},
+	email : {type: String, required : true, unique : true},
+	password : {type : String, required : true},
+	health : {type : Number, default : 100},
+	mana : {type : Number, default : 50},
+	experience : {type : Number, default : 0},
+	level : {type : Number, default : 1},
+	tasks : {type: Array, default : []}
+}
+
+
+
 
 
 # development only
@@ -112,11 +117,11 @@ if 'development' == app.get('env')
 #BASIC ROUTES
 app.get '/', (req, res) ->
 	res.render 'index'
-	return
+	
 
 app.get '/login', (req, res) ->
 	res.render 'login'
-	return
+	
 
 
 # # add this :  app.isAuthenticated,
@@ -135,14 +140,14 @@ app.get '/dash', (req, res) ->
 
 app.get '/login', (req, res) ->
 	res.render 'login'
-	return
+	
 
 
 
 #LOGIN/SIGNUP ROUTES
 
 app.post '/signin', passport.authenticate('local'), (req, res) ->
-	console.log 'req.user: ', req.user
+	console.log 'req.user: ', req
 	res.send {redirect : '/dash'}
 
 
@@ -157,7 +162,7 @@ app.post '/signup', (req, res) ->
 	newUser.save()
 	console.log 'UserID', newUser._id
 	res.send 'success!'
-	return
+	
 
 
 # # Steam Authentication
@@ -178,7 +183,7 @@ app.post '/signup', (req, res) ->
 app.get '/logout', (req, res) ->
 	req.logout()
 	res.redirect '/'
-	return
+	
 
 
 
