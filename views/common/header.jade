@@ -13,19 +13,22 @@ html
 						span.icon-bar
 						span.icon-bar
 					a.navbar-brand(href='/') RogueLife
-				-if(typeof user == 'undefined')
+				-if(typeof userCharacter == 'undefined')
 					.loginStatus.pull-right
 						a(href="/login") Login / Sign Up
 				-else
 					.loginStatus.pull-right
 						// place user avatar img here
-						span Welcome, #{user.username}!
+						span Welcome, #{userCharacter.username}!
 						br
-						a(href="/logout") Logout
+						a(href="/users/logout") Logout
 				.collapse.navbar-collapse.navbar-ex1-collapse
 					ul.nav.navbar-nav
 						li
-							a(href='#') Link
+							-if(typeof userCharacter == 'undefined')
+								a(href='/login') My Character
+							-else
+								a(href='/#{userCharacter.username}') My Character
 						li
 							a(href='#') Link
 						li.dropdown

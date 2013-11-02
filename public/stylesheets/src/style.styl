@@ -1,3 +1,25 @@
+// Functions
+vendor(prop, args)
+        -webkit-{prop} args
+        -moz-{prop} args
+        -ms-{prop} args
+        -o-{prop} args
+        {prop} args
+background-linear-gradient(startPoint, startColor, startInterval, endColor, endInterval)
+        background-color startColor
+        background-image -webkit-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+        background-image -moz-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+        background-image -ms-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+        background-image -o-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+        background-image linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+border-radius()
+        vendor('border-radius', arguments)
+background-image()
+        vendor('background-image', arguments)
+transition()
+        vendor('transition', arguments)
+transform()
+        vendor('transform', arguments)
 body
 	font 14px "Cambria", Helvetica, Arial, sans-serif
 	padding-bottom 70px
@@ -53,6 +75,7 @@ body
 	border solid gray
 	height 25px
 	color white
+	font-family serif
 .healthBar
 	background-color #F13939
 	margin-right 8.20%
@@ -61,6 +84,43 @@ body
 .expBar
 	color black
 	// background-color #660066
+.choosePath
+	background-color wheat
+	border-radius(5px)
+	height 200px
+	margin 1.6%
+	box-shadow 0px 5px 20px black
+	transition all 0.3s ease-in-out
+	border outset
+.choosePath:hover
+	transition all 0.3s ease-in-out
+	box-shadow 0px 5px 40px black
+	cursor pointer
+.choosePathHeader
+	text-align center
+.pathDesc
+	position relative
+	top 70%
+	text-align center
+	font-family megapixelregular
+	font-size 2.5em
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

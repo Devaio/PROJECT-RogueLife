@@ -1,35 +1,65 @@
 extends common/header
 block dash
-	.row-fluid.container
-		.col-xs-4.healthBar HP
-		.col-xs-4.manaBar MP
-		br
-		br
-		.col-xs-9.offset-2.expBar XP
 
+	-if(typeof userCharacter == 'undefined')
+		.row-fluid.container
+			.col-xs-4.healthBar HP
+			.col-xs-4.manaBar MP
+			br
+			br
+			.col-xs-9.offset-2.expBar XP
+	-else
+		.row-fluid.container
+			.col-xs-4.healthBar #{userCharacter.currentHealth} / #{userCharacter.health} HP
+			.col-xs-4.manaBar #{userCharacter.currentMana} / #{userCharacter.mana} MP
+			br
+			br
+			.col-xs-9.offset-2.expBar #{userCharacter.experience} XP		
 
 
 	.row-fluid.container
 		h3.col-xs-10.offset-2 The story so far...
 	hr
-	.row-fluid.container
-		.completedTasks.col-xs-3
-			.listHeading
-				h4 Completed Quests!
-			ul.activityList.completedQuests
-				//- include dashTemplate.html <- need to add handlebars
-				li first task
-					.taskDescription
-						p This is what you did!
-					.taskStatus
-		.currentTasks.col-xs-3
-			.listHeading
-				h4 Current Quests
-			ul.activityList.currentQuests
-		.gameTasks.col-xs-3
-			.listHeading
-				h4 Game Achievements
-			ul.activityList.gameAch
+
+	if userCharacter.path === undefined
+		.row-fluid.container
+			.choosePathHeader.col-xs-6
+				h3 Choose your path
+		.row-fluid.container
+			.choosePath.col-md-2.col-xs-7.exercise(data-path='exercise')
+				p.pathDesc Exercise
+			.choosePath.col-md-2.col-xs-7.learning(data-path='learning')
+				p.pathDesc Learning
+			.choosePath.col-md-2.col-xs-7.eating(data-path='eating')
+				p.pathDesc Healthy Eating
+			.choosePath.col-md-2.col-xs-7.organize(data-path='organize')
+				p.pathDesc Organization
+			.choosePath.col-md-2.col-xs-7.finance(data-path='finance')
+				.pathDesc Finance
+
+
+
+
+
+	else
+		.row-fluid.container
+			.completedTasks.col-xs-3
+				.listHeading
+					h4 Completed Quests!
+				ul.activityList.completedQuests
+					//- include dashTemplate.html <- need to add handlebars
+					li first task
+						.taskDescription
+							p This is what you did!
+						.taskStatus
+			.currentTasks.col-xs-3
+				.listHeading
+					h4 Current Quests
+				ul.activityList.currentQuests
+			.gameTasks.col-xs-3
+				.listHeading
+					h4 Game Achievements
+				ul.activityList.gameAch
 
 
 

@@ -20,6 +20,15 @@
         window.location = data.redirect;
       });
     });
+    $('.choosePath').on('click', function() {
+      var chosenPath;
+      chosenPath = $(this).attr('data-path');
+      return $.post('/chosenpath', {
+        path: chosenPath
+      }, function(data) {
+        return console.log(chosenPath);
+      });
+    });
   });
 
 }).call(this);

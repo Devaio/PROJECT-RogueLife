@@ -25,8 +25,10 @@ $ ->
 			window.location = data.redirect
 			return
 		return
-
-
+	$('.choosePath').on 'click', () ->
+		chosenPath = $(@).attr('data-path')
+		$.post '/chosenpath', {path : chosenPath}, (data) ->
+			console.log chosenPath
 
 
 
