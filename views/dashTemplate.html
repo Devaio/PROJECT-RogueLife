@@ -1,7 +1,79 @@
-<script id='completed-tasks' type='text/x-handlebars-template'>
-	{{each users.tasks}}
+<script id='dash-board' type='text/x-handlebars-template'>
+	{{#if path}}
+		<div class="row-fluid container">
+		  <div class="completedQuests col-xs-3">
+		    <div class="listHeading">
+		      <h4>Completed Quests!</h4>
+		    </div>
+		    <ul id="completedQuests" class="activityList"></ul>
+		    {{#each completedQuests}}
+				<li> {{this}}
+					<div class="taskStatus"></div>
+				</li>
+			{{/each}}
+		  </div>
+		  <div class="currentQuests col-xs-3">
+		    <div class="listHeading">
+		      <h4>Current Quests</h4>
+		    </div>
+		    <ul id="currentQuests" class="activityList"></ul>
+		    {{#each currentQuests}}
+				<li class="quest"> {{this}}
+					<div class="taskStatus"></div>
+				</li>
+			{{/each}}
+			<button class="btn btn-info btn-sm addQuest">+ Quest
+		  </div>
+		  <div class="gameQuests col-xs-3">
+		    <div class="listHeading">
+		      <h4>Game Achievements</h4>
+		    </div>
+		    <ul id="gameAch" class="activityList"></ul>
+		  </div>
+		</div>
+	{{else}}
+		<div id="pathChooser">
+		  <div class="row-fluid container">
+		    <div class="choosePathHeader col-xs-6">
+		      <h3>Choose your path</h3>
+		    </div>
+		  </div>
+		  <div class="row-fluid container">
+		    <div data-path="Exercise" class="choosePath col-md-2 col-xs-7 exercise">
+		      <p class="pathDesc">Exercise</p>
+		    </div>
+		    <div data-path="Learning" class="choosePath col-md-2 col-xs-7 learning">
+		      <p class="pathDesc">Learning</p>
+		    </div>
+		    <div data-path="Healthy Eating" class="choosePath col-md-2 col-xs-7 eating">
+		      <p class="pathDesc">Healthy Eating</p>
+		    </div>
+		    <div data-path="Organization" class="choosePath col-md-2 col-xs-7 organize">
+		      <p class="pathDesc">Organization</p>
+		    </div>
+		    <div data-path="Finance" class="choosePath col-md-2 col-xs-7 finance">
+		      <div class="pathDesc">Finance</div>
+		    </div>
+		  </div>
+		</div>
+	{{/if}}
+
+</script>
+<script id='char-stats' type='text/x-handlebars-template'>
+			<div class="col-xs-4 healthBar"> {{currentHealth}} / {{health}} HP </div>
+			<div class="col-xs-4 manaBar"> {{currentMana}} / {{mana}} MP </div>
+			<br>
+			<br>
+			<div class="col-xs-9 offset-2 expBar"> {{experience}} XP </div>	
+			<br>
+		<hr>
+
+</script>
+<!--<script id='game-achievements' type='text/x-handlebars-template'>
+
+	{{#each tasks}}
 
 	
 	{{/each}}
 
-</script>
+</script> -->

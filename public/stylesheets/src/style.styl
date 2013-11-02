@@ -66,7 +66,7 @@ body
 .signUpButton
 	position relative
 	top 55px
-.completedTasks, .currentTasks, .gameTasks
+.completedQuests, .currentQuests, .gameQuests
 	border thick gray inset
 	margin-right 8%
 .healthBar, .manaBar, .expBar
@@ -89,12 +89,12 @@ body
 	border-radius(5px)
 	height 200px
 	margin 1.6%
-	box-shadow 0px 5px 20px black
+	box-shadow 0px 3px 10px black
 	transition all 0.3s ease-in-out
 	border outset
 .choosePath:hover
 	transition all 0.3s ease-in-out
-	box-shadow 0px 5px 40px black
+	box-shadow 0px 15px 40px black
 	cursor pointer
 .choosePathHeader
 	text-align center
@@ -104,8 +104,11 @@ body
 	text-align center
 	font-family megapixelregular
 	font-size 2.5em
-
-
+#error
+	display none
+	position relative
+	bottom 30px
+	color red
 
 
 

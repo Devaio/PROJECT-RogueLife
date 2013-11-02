@@ -27,9 +27,9 @@ app.use require('stylus').middleware(__dirname + '/../public')
 app.use express.methodOverride()
 app.configure () ->
 	app.use express.static(path.join(__dirname, '/../public'))
-	app.use express.cookieParser()
+	app.use express.cookieParser('catboard key')
 	app.use express.bodyParser()
-	app.use express.session({secret : 'catboard key'})
+	app.use express.session()
 	app.use passport.initialize()
 	app.use passport.session()
 	app.use app.router
@@ -48,8 +48,7 @@ mongoose.connect MongoURI
 app.isAuthenticated = (req, res, next) ->
 	if req.isAuthenticated()
 		return next()
-	else
-		res.redirect '/login'
+	res.redirect '/login'
 
 #Passport needs to serialize to support persistent login sessions
 passport.serializeUser (user, done) ->
@@ -98,8 +97,10 @@ Character = mongoose.model 'Character', {
 	currentMana : {type : Number, default : 50},
 	experience : {type : Number, default : 0},
 	level : {type : Number, default : 1},
-	tasks : {type: Array, default : []},
+	currentQuests : {type: Array, default : []},
+	completedQuests : {type: Array, default : []},
 	path : {type : String}
+	avatar : {type : String}
 }
 
 
@@ -119,10 +120,23 @@ app.get '/login', (req, res) ->
 	
 
 
-app.get '/:username', (req, res) ->
-	console.log 'requser in GET', req.params.username # not currently getting user
 
-	Character.find {username : req.params.username}, (err, data) ->
+
+
+
+#LOGIN/SIGNUP ROUTES
+
+app.post '/signin', passport.authenticate('local'), (req, res) ->
+	console.log req.user.username
+	res.send {redirect : '/dash', charData : req.user}
+
+app.get '/charData', app.isAuthenticated, (req, res) ->
+	res.send req.user
+
+
+app.get '/dash', app.isAuthenticated, (req, res) ->
+	console.log 'USER IN DASH', req.user
+	Character.find {username : req.user.username}, (err, data) ->
 		if err
 			console.log 'error', err
 		else
@@ -131,29 +145,27 @@ app.get '/:username', (req, res) ->
 
 
 
-#LOGIN/SIGNUP ROUTES
-
-app.post '/signin', passport.authenticate('local'), (req, res) ->
-	console.log req.user.username
-	res.redirect '/' + req.user.username
-
-
-
 app.get '/login', (req, res) ->
 	res.render 'login'
-	
+
+### FIND A SOLUTION FOR ME - REDIRECT IN SIGNIN POST ROUTES TO /UNDEFINED ###
+app.get '/undefined', (req, res) ->
+	res.redirect '/dash'
 
 
 app.post '/signup', (req, res) ->
-	console.log 'reqBody', req.body
-	newUser = new Character {
-		email : req.body.email,
-		password : req.body.password,
-		username : req.body.username
-	}
-	newUser.save()
-	console.log 'UserID', newUser._id
-	res.send 'success!'
+	Character.findOne {username : req.body.username}, (err, user) ->
+		if user
+			res.send 'Already a user!'
+		else
+			newUser = new Character {
+				email : req.body.email,
+				password : req.body.password,
+				username : req.body.username
+			}
+			newUser.save()
+			console.log 'UserID', newUser._id
+			res.send 'success!'
 	
 
 
@@ -161,8 +173,19 @@ app.post '/signup', (req, res) ->
 # Choosing habit path
 app.post '/chosenpath', (req, res) ->
 	console.log 'user', req.user
-	# Character.find {username : req.user.username}
+	console.log 'BODY PATH', req.body.path
+	Character.update {username : req.user.username}, {$set : {path : req.body.path}}, (err, char) ->
+		char = char[0]
+		console.log 'CHAR!!!', char
+		if err
+			console.log 'error choosepath', err
 	res.send 'success!'
+	
+app.post '/addQuest', (req, res) ->
+	Character.update {username : req.user.username}, {$push : {currentQuests : req.body.currentQuest}}, (err, char) ->
+		if err
+			console.log 'error questadd', err
+	res.send 'new quest!'
 
 
 
@@ -185,7 +208,7 @@ app.get '/auth/steam/return', (req, res) ->
 
 app.get '/users/logout', (req, res) ->
 	req.session.destroy (err) ->
-		res.redirect '/'
+	res.redirect '/'
 
 	
 

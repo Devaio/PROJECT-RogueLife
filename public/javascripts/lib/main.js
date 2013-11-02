@@ -6,7 +6,7 @@
       e.preventDefault();
       serialData = $(this).serialize();
       $.post("/signup", serialData, function(data) {
-        console.log(data);
+        return console.log(data);
       });
       $('#signUpModal').modal('toggle');
     });
@@ -15,12 +15,12 @@
       e.preventDefault();
       serialData = $(this).serialize();
       console.log('outsidepost', serialData);
-      $.post('/signin', serialData, function(data) {
+      return $.post('/signin', serialData, function(data) {
         console.log('insidepost', serialData);
-        window.location = data.redirect;
+        return window.location = data.redirect;
       });
     });
-    $('.choosePath').on('click', function() {
+    $(document).on('click', '.choosePath', function() {
       var chosenPath;
       chosenPath = $(this).attr('data-path');
       return $.post('/chosenpath', {

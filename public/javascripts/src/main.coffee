@@ -1,9 +1,4 @@
 $ ->
-	# dataSource = $('#completed-tasks').html();
-	# searchTemplate = Handlebars.compile(dataSource)
-	# $completed = $('#completedList')
-
-
 
 
 
@@ -12,7 +7,6 @@ $ ->
 		serialData = $(@).serialize()
 		$.post "/signup", serialData, (data) ->
 			console.log data
-			return
 		$('#signUpModal').modal 'toggle'
 		return
 
@@ -23,9 +17,9 @@ $ ->
 		$.post '/signin', serialData, (data) ->
 			console.log 'insidepost', serialData
 			window.location = data.redirect
-			return
-		return
-	$('.choosePath').on 'click', () ->
+
+
+	$(document).on 'click', '.choosePath', () ->
 		chosenPath = $(@).attr('data-path')
 		$.post '/chosenpath', {path : chosenPath}, (data) ->
 			console.log chosenPath
