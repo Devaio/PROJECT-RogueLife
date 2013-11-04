@@ -1,36 +1,51 @@
 <script id='dash-board' type='text/x-handlebars-template'>
 	{{#if path}}
 		<div class="row-fluid container">
-		  <div class="completedQuests col-xs-3">
+			<ul class="nav nav-tabs">
+			  <li class="active"><a data-toggle='tab' href="#currentQuests">Current Quests</a></li>
+			  <li><a data-toggle='tab' href="#completedQuests">Completed Quests</a></li>
+			</ul>
+
+		<div class='tab-content'>
+		  <div id='completedQuests' class="col-xs-3 tab-pane">
 		    <div class="listHeading">
 		      <h4>Completed Quests!</h4>
 		    </div>
-		    <ul id="completedQuests" class="activityList"></ul>
+		    <ul class="activityList completedQuestList"></ul>
+
 		    {{#each completedQuests}}
 				<li> {{this}}
 					<div class="taskStatus"></div>
 				</li>
 			{{/each}}
+			
 		  </div>
-		  <div class="currentQuests col-xs-3">
+		  <div id='currentQuests' class="col-xs-3 tab-pane active">
 		    <div class="listHeading">
 		      <h4>Current Quests</h4>
+		      <button class="btn btn-info btn-sm addQuest">+ Quest
 		    </div>
-		    <ul id="currentQuests" class="activityList"></ul>
+		    <ul class="activityList currentQuestList"></ul>
+
 		    {{#each currentQuests}}
 				<li class="quest"> {{this}}
 					<div class="taskStatus"></div>
 				</li>
 			{{/each}}
-			<button class="btn btn-info btn-sm addQuest">+ Quest
+
+			  </div>
+			
 		  </div>
-		  <div class="gameQuests col-xs-3">
+		
+		  <div id='gameQuests' class="col-xs-3">
 		    <div class="listHeading">
 		      <h4>Game Achievements</h4>
 		    </div>
-		    <ul id="gameAch" class="activityList"></ul>
+		    <ul class="activityList gameQuestList"></ul>
 		  </div>
 		</div>
+
+
 	{{else}}
 		<div id="pathChooser">
 		  <div class="row-fluid container">
@@ -56,6 +71,8 @@
 		    </div>
 		  </div>
 		</div>
+
+
 	{{/if}}
 
 </script>

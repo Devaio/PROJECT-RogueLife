@@ -16,7 +16,6 @@ mongoose = require 'mongoose'
 app = express();
 pathTasks = require './pathtasks'
 
-
 # all environments
 app.set 'port', process.env.PORT || 3000
 app.set 'views', __dirname + '/../views'
@@ -128,13 +127,13 @@ app.get '/login', (req, res) ->
 
 app.post '/signin', passport.authenticate('local'), (req, res) ->
 	console.log req.user.username
-	res.send {redirect : '/dash', charData : req.user}
+	res.send {redirect : '/users/' + req.user._id, charData : req.user}
 
 app.get '/charData', app.isAuthenticated, (req, res) ->
 	res.send req.user
 
 
-app.get '/dash', app.isAuthenticated, (req, res) ->
+app.get '/users/:id', app.isAuthenticated, (req, res) ->
 	console.log 'USER IN DASH', req.user
 	Character.find {username : req.user.username}, (err, data) ->
 		if err
@@ -147,10 +146,6 @@ app.get '/dash', app.isAuthenticated, (req, res) ->
 
 app.get '/login', (req, res) ->
 	res.render 'login'
-
-### FIND A SOLUTION FOR ME - REDIRECT IN SIGNIN POST ROUTES TO /UNDEFINED ###
-app.get '/undefined', (req, res) ->
-	res.redirect '/dash'
 
 
 app.post '/signup', (req, res) ->
@@ -193,12 +188,12 @@ app.post '/addQuest', (req, res) ->
 
 # Steam Authentication
 app.get '/auth/steam/', passport.authenticate('steam'), (req, res) ->
-	res.redirect '/'
 	return
  
 # {steamLogin : req.query} in return
 app.get '/auth/steam/callback',passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
-	res.render '/', {steamLogin : req.query}
+	console.log 'auth steam cb', req.user
+	res.redirect '/'
 	return
 
 app.get '/auth/steam/return', (req, res) ->

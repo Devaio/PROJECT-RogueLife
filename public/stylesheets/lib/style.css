@@ -58,9 +58,9 @@ body {
   position: relative;
   top: 55px;
 }
-.completedQuests,
-.currentQuests,
-.gameQuests {
+#completedQuests,
+#currentQuests,
+#gameQuests {
   border: thick #808080 inset;
   margin-right: 8%;
 }
