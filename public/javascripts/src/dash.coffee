@@ -1,4 +1,5 @@
 $ ->
+	socket = io.connect()
 	charSource =  $('#char-stats').html()
 	dashSource = $('#dash-board').html()
 	pathSource = $('#path-chosen').html()
@@ -27,9 +28,9 @@ $ ->
 	$.get '/charData', {}, (userCharacter) ->
 		console.log userCharacter
 		updateDashboard(userCharacter)
-		$('.quest').hallo({editable : true})
-		$('.daily').hallo({editable : true})
-		console.log 'time', userCharacter.currentQuests[0].startQuest.fromNow()
+		$('.questName').hallo({editable : true})
+		$('.dailyName').hallo({editable : true})
+		
 
 
 	$(document).on 'click', '.choosePath', () ->
@@ -38,26 +39,35 @@ $ ->
 			updateDashboard(userCharacter)
 
 	$(document).on 'click', '.addQuest', () ->
-		$('.currentQuestList').append($('<li class="quest list-unstyled"><span class="questName">Enter a new Quest</span><div class="taskStatus"></div><span class="questTimer pull-right text-muted">'+moment()+'</span></li>'))
+		$('.currentQuestList').append($('<li class="quest list-unstyled"><span class="questName">Enter a new Quest</span><div class="taskStatus"></div><div class="questTimer pull-right text-muted">'+moment().format('lll')+'</div></li>'))
 		$('.questName').hallo({editable : true})
+		
 
 	$(document).on 'click', '.addDaily', () ->
-		$('.dailyQuestList').append($('<p class="daily">Enter new Daily</p>'))
+		$('.dailyQuestList').append($('<li class="daily list-unstyled"><span class="dailyName">Enter a new Daily</span><div class="taskStatus"></div></li>'))
 		$('.dailyName').hallo({editable : true})
 
-
+	$(document).on 'halloactivated', '.questName', () ->
+		quest = $(@).text()
+		$.post '/removeQuest', {questName : quest}, () ->
+	
 	$(document).on 'hallodeactivated', '.questName', () ->
 		$(@).fadeOut('fast').fadeIn('fast')
 		quest = $(@).text()
-		timeStamp = moment().format('L')
-		$.post '/addQuest', {currentQuest : quest, time : timeStamp}, (data) ->
+		$.post '/updateQuest', {questName : quest}, () ->
+
+	$(document).on 'halloactivated', '.dailyName', () ->
+		daily = $(@).text()
+		$.post '/removedaily', {dailyName : daily}, () ->
 
 	$(document).on 'hallodeactivated', '.dailyName', () ->
 		$(@).fadeOut('fast').fadeIn('fast')
 		daily = $(@).text()
-		$.post '/addDaily', {daily : daily}, (data) ->
+		$.post '/updateDaily', {dailyName : daily}, () ->
+		
 	
-
+	socket.on 'connected', (data) ->
+		console.log 'connected'
 
 
 

@@ -7,7 +7,7 @@
 			</ul>
 
 		<div class='tab-content'>
-		  <div id='completedQuests' class="col-xs-3 tab-pane">
+		  <div id='completedQuests' class="col-md-4 tab-pane">
 		    <div class="listHeading">
 		      <h4>Completed Quests!</h4>
 		    </div>
@@ -20,10 +20,10 @@
 			{{/each}}
 			
 		  </div>
-		  <div id='currentQuests' class="col-xs-3 tab-pane active">
+		  <div id='currentQuests' class="col-md-4 tab-pane active">
 		    <div class="listHeading">
 		      <h4>Current Quests</h4>
-		      <button class="btn btn-info btn-sm addQuest">+ Quest
+		      <button class="btn btn-info btn-xs addQuest">+ Quest
 		    </div>
 		    <ul class="activityList currentQuestList list-unstyled"></ul>
 
@@ -31,7 +31,7 @@
 				<li class="quest list-unstyled">
 					<span class='questName'>{{this.questName}}</span>
 					<div class="taskStatus"></div>
-					<span class='questTimer pull-right text-muted'>{{this.startQuest}}</span>
+					<div class='questTimer pull-right text-muted'>{{this.startQuest}}</div>
 				</li>
 			{{/each}}
 
@@ -39,15 +39,15 @@
 			
 		  </div>
 
-		  <div id='dailyQuests' class="col-xs-3">
+		  <div id='dailyQuests' class="col-md-4">
 		    <div class="listHeading">
 		      <h4>Dailies</h4>
-		      <button class="btn btn-info btn-sm addDaily">+ Daily
+		      <button class="btn btn-info btn-xs addDaily">+ Daily
 		    </div>
 		    <ul class="activityList dailyQuestList list-unstyled"></ul>
 
 		    {{#each dailies}}
-				<li class="daily">
+				<li class="daily list-unstyled">
 				<span class='dailyName'>{{this}}</span>
 					<div class="taskStatus"></div>
 				</li>
@@ -55,7 +55,7 @@
 
 			  </div>
 		
-		  <div id='gameQuests' class="col-xs-3">
+		  <div id='gameQuests' class="col-sm-2">
 		    <div class="listHeading">
 		      <h4>Game Achievements</h4>
 		    </div>
