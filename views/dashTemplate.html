@@ -1,7 +1,7 @@
 <script id='dash-board' type='text/x-handlebars-template'>
 	{{#if path}}
-		<div class="row-fluid container">
-			<ul class="nav nav-tabs">
+		<div class="row-fluid">
+			<ul class="nav nav-tabs tabList">
 			  <li class="active"><a data-toggle='tab' href="#currentQuests">Current Quests</a></li>
 			  <li><a data-toggle='tab' href="#completedQuests">Completed Quests</a></li>
 			</ul>
@@ -11,10 +11,10 @@
 		    <div class="listHeading">
 		      <h4>Completed Quests!</h4>
 		    </div>
-		    <ul class="activityList completedQuestList"></ul>
+		    <ul class="activityList completedQuestList list-unstyled"></ul>
 
 		    {{#each completedQuests}}
-				<li class='completedQuest'> {{this}}
+				<li class='list-unstyled completedQuest'> {{this}}
 					<div class="taskStatus"></div>
 				</li>
 			{{/each}}
@@ -25,12 +25,13 @@
 		      <h4>Current Quests</h4>
 		      <button class="btn btn-info btn-sm addQuest">+ Quest
 		    </div>
-		    <ul class="activityList currentQuestList"></ul>
+		    <ul class="activityList currentQuestList list-unstyled"></ul>
 
 		    {{#each currentQuests}}
-				<li class="quest"> {{this.questName}}
-					<span class='questTimer'>{{this.startQuest}}</span>
+				<li class="quest list-unstyled">
+					<span class='questName'>{{this.questName}}</span>
 					<div class="taskStatus"></div>
+					<span class='questTimer pull-right text-muted'>{{this.startQuest}}</span>
 				</li>
 			{{/each}}
 
@@ -43,10 +44,11 @@
 		      <h4>Dailies</h4>
 		      <button class="btn btn-info btn-sm addDaily">+ Daily
 		    </div>
-		    <ul class="activityList dailyQuestList"></ul>
+		    <ul class="activityList dailyQuestList list-unstyled"></ul>
 
 		    {{#each dailies}}
-				<li class="daily"> {{this}}
+				<li class="daily">
+				<span class='dailyName'>{{this}}</span>
 					<div class="taskStatus"></div>
 				</li>
 			{{/each}}

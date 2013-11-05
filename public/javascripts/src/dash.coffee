@@ -16,6 +16,8 @@ $ ->
 	$game = $('#gameAch')
 	$current = $('#currentQuests')
 	$path = $('#currentPath')
+	$('.questName').hallo({editable : true})
+	$('.dailyName').hallo({editable : true})
 
 	updateDashboard = (char) ->
 		$dash.html handleDash char
@@ -25,6 +27,9 @@ $ ->
 	$.get '/charData', {}, (userCharacter) ->
 		console.log userCharacter
 		updateDashboard(userCharacter)
+		$('.quest').hallo({editable : true})
+		$('.daily').hallo({editable : true})
+		console.log 'time', userCharacter.currentQuests[0].startQuest.fromNow()
 
 
 	$(document).on 'click', '.choosePath', () ->
@@ -33,21 +38,33 @@ $ ->
 			updateDashboard(userCharacter)
 
 	$(document).on 'click', '.addQuest', () ->
-		$('.currentQuestList').append($('<p class="quest">Embark on a new quest!</p>'))
-		$('.quest').hallo({editable : true})
+		$('.currentQuestList').append($('<li class="quest list-unstyled"><span class="questName">Enter a new Quest</span><div class="taskStatus"></div><span class="questTimer pull-right text-muted">'+moment()+'</span></li>'))
+		$('.questName').hallo({editable : true})
 
 	$(document).on 'click', '.addDaily', () ->
 		$('.dailyQuestList').append($('<p class="daily">Enter new Daily</p>'))
-		$('.daily').hallo({editable : true})
+		$('.dailyName').hallo({editable : true})
 
 
-	$(document).on 'hallodeactivated', '.quest', () ->
+	$(document).on 'hallodeactivated', '.questName', () ->
 		$(@).fadeOut('fast').fadeIn('fast')
 		quest = $(@).text()
-		$.post '/addQuest', {currentQuest : quest}, (data) ->
+		timeStamp = moment().format('L')
+		$.post '/addQuest', {currentQuest : quest, time : timeStamp}, (data) ->
 
-	$(document).on 'hallodeactivated', '.daily', () ->
+	$(document).on 'hallodeactivated', '.dailyName', () ->
 		$(@).fadeOut('fast').fadeIn('fast')
 		daily = $(@).text()
 		$.post '/addDaily', {daily : daily}, (data) ->
+	
+
+
+
+
+
+
 	return
+
+
+
+

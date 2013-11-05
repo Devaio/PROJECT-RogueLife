@@ -164,7 +164,7 @@ app.post '/signup', (req, res) ->
 			}
 			newUser.save()
 			console.log 'UserID', newUser._id
-			res.send 'success!'
+			res.redirect 'success!'
 	
 
 

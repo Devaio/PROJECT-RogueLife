@@ -15,6 +15,12 @@
     $game = $('#gameAch');
     $current = $('#currentQuests');
     $path = $('#currentPath');
+    $('.questName').hallo({
+      editable: true
+    });
+    $('.dailyName').hallo({
+      editable: true
+    });
     updateDashboard = function(char) {
       $dash.html(handleDash(char));
       $charStats.html(handleChar(char));
@@ -22,7 +28,14 @@
     };
     $.get('/charData', {}, function(userCharacter) {
       console.log(userCharacter);
-      return updateDashboard(userCharacter);
+      updateDashboard(userCharacter);
+      $('.quest').hallo({
+        editable: true
+      });
+      $('.daily').hallo({
+        editable: true
+      });
+      return console.log('time', userCharacter.currentQuests[0].startQuest.fromNow());
     });
     $(document).on('click', '.choosePath', function() {
       $('#pathChooser').fadeOut();
@@ -31,26 +44,28 @@
       });
     });
     $(document).on('click', '.addQuest', function() {
-      $('.currentQuestList').append($('<p class="quest">Embark on a new quest!</p>'));
-      return $('.quest').hallo({
+      $('.currentQuestList').append($('<li class="quest list-unstyled"><span class="questName">Enter a new Quest</span><div class="taskStatus"></div><span class="questTimer pull-right text-muted">' + moment() + '</span></li>'));
+      return $('.questName').hallo({
         editable: true
       });
     });
     $(document).on('click', '.addDaily', function() {
       $('.dailyQuestList').append($('<p class="daily">Enter new Daily</p>'));
-      return $('.daily').hallo({
+      return $('.dailyName').hallo({
         editable: true
       });
     });
-    $(document).on('hallodeactivated', '.quest', function() {
-      var quest;
+    $(document).on('hallodeactivated', '.questName', function() {
+      var quest, timeStamp;
       $(this).fadeOut('fast').fadeIn('fast');
       quest = $(this).text();
+      timeStamp = moment().format('L');
       return $.post('/addQuest', {
-        currentQuest: quest
+        currentQuest: quest,
+        time: timeStamp
       }, function(data) {});
     });
-    $(document).on('hallodeactivated', '.daily', function() {
+    $(document).on('hallodeactivated', '.dailyName', function() {
       var daily;
       $(this).fadeOut('fast').fadeIn('fast');
       daily = $(this).text();
