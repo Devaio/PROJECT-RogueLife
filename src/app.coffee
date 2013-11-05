@@ -53,12 +53,11 @@ app.isAuthenticated = (req, res, next) ->
 
 #Passport needs to serialize to support persistent login sessions
 passport.serializeUser (user, done) ->
-	done null, user.id
+	done null, user
 	
 
-passport.deserializeUser (id, done) ->
-	Character.findById id, (err, user) ->
-		done err, user
+passport.deserializeUser (obj, done) ->
+	done null, obj
 		
 	
 
@@ -91,22 +90,46 @@ passport.use new LocalStrategy (username, password, done) ->
 # 		console.log 'prof', profile
 # 		return done(null, profile)
 
-
-# Setting Up OpenID for Steam Auth
 passport.use new SteamStrategy {
-	returnURL: 'http://roguelife.herokuapp.com/auth/steam/return',
-	realm: 'http://roguelife.herokuapp.com/'
+	returnURL: 'http://localhost:3000/auth/steam/return',
+	realm: 'http://localhost:3000/'
 	},
-	(identifier, done) ->
-		User.findByOpenID { openId: identifier }, (err, user) ->
-			return done(err, user);
-		return
+	(identifier, profile, done) ->
+		console.log 'PROFF', profile
+		console.log 'IDENTITFIERERE', identifier
+		console.log 'email', profile.emails['value']
+		Character.find {_id: profile.emails['value']}, (err, user) ->
+				done err, user
+				console.log 'uu', user
+				if user.length is 0
+						console.log 'uniqueUser', user
+						newChar = new Character {
+								openId: identifier,
+								_id: profile.emails[0]['value'],
+								displayName: profile.displayName,
+								emails: profile.emails[0]['value']
+						}, (err, user) ->
+								console.log 'hi'
+								done err, user
+								return
+						return
+				return
+steamKey = 'F75DE47E0A6FAD04D9CA1C85D5C9C6E8'
+# passport.use new SteamStrategy {
+# 	returnURL: 'http://localhost:3000/auth/steam/return',
+# 	realm: 'http://localhost:3000/'
+# 	},
+# 	(identifier, done) ->
+# 		console.log 'IDENTITFIERERE', identifier
+# 		Character.findByOpenID {openId : identifier}, (err, user) ->
+# 			console.log 'USSERRRR', user
+# 			done(err, user)
 
 Character = mongoose.model 'Character', {
 	username : {type : String, required : true, unique : true},
 	email : {type: String, required : true, unique : true},
 	password : {type : String, required : true},
-	openID : {type : String},
+	steamID : {type : String},
 	health : {type : Number, default : 100},
 	currentHealth : {type : Number, default : 100}
 	mana : {type : Number, default : 50},
@@ -134,12 +157,10 @@ app.get '/', (req, res) ->
 
 app.get '/login', (req, res) ->
 	res.render 'login'
-	
 
-
-
-
-
+app.get '/logout', (req, res) ->
+	req.logOut() 
+	res.redirect '/'
 
 #LOGIN/SIGNUP ROUTES
 
@@ -180,7 +201,7 @@ app.post '/signup', (req, res) ->
 			console.log 'UserID', newUser._id
 			passport.authenticate 'local', (req, res) ->
 				res.redirect '/'
-	
+
 
 
 
@@ -217,32 +238,31 @@ app.post '/updateDaily', (req, res) ->
 	res.send 'updated'
 
 
+
+
 # Steam Authentication
-app.get '/auth/steam/', passport.authenticate 'steam', (req, res)->
-	res.send 'steamsuccess'
- 
-# {steamLogin : req.query} in return
-app.get '/auth/steam/callback', passport.authenticate 'steam', (req, res) ->
-	console.log 'auth steam cb', req.user
+app.get '/auth/steam', passport.authenticate('steam', {failureRedirect : '/login'}) , (req, res)->
 	res.redirect '/'
-	return
 
-app.get '/auth/steam/return', passport.authenticate 'steam', (req, res) ->
-	console.log 'steam req.user', req.user
-	res.send req.query
-	return
 
-app.get '/logout', (req, res) ->
-	req.logOut() 
-	res.redirect '/'
+app.get '/auth/steam/return', passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
+	window.steamUserId = req.query['openid.identity'].slice(36)
+	console.log steamUserId
+
+	res.redirect '/getsteaminfo'
+
+app.get '/getsteaminfo', (req, res) ->
+
 	
+
+
 ### SOCKETS ###
 user = {}
 io.sockets.on 'connection', (socket) ->
 	user[socket.id] = socket.id
 
 	io.sockets.emit 'connected', {id : socket.id}
-	socket.on 'updateDaily', (dailyName) ->########here!
+	socket.on 'updateDaily', (dailyName) ->
 
 
 	
