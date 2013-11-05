@@ -14,7 +14,7 @@
 		    <ul class="activityList completedQuestList"></ul>
 
 		    {{#each completedQuests}}
-				<li> {{this}}
+				<li class='completedQuest'> {{this}}
 					<div class="taskStatus"></div>
 				</li>
 			{{/each}}
@@ -28,7 +28,8 @@
 		    <ul class="activityList currentQuestList"></ul>
 
 		    {{#each currentQuests}}
-				<li class="quest"> {{this}}
+				<li class="quest"> {{this.questName}}
+					<span class='questTimer'>{{this.startQuest}}</span>
 					<div class="taskStatus"></div>
 				</li>
 			{{/each}}
@@ -36,6 +37,21 @@
 			  </div>
 			
 		  </div>
+
+		  <div id='dailyQuests' class="col-xs-3">
+		    <div class="listHeading">
+		      <h4>Dailies</h4>
+		      <button class="btn btn-info btn-sm addDaily">+ Daily
+		    </div>
+		    <ul class="activityList dailyQuestList"></ul>
+
+		    {{#each dailies}}
+				<li class="daily"> {{this}}
+					<div class="taskStatus"></div>
+				</li>
+			{{/each}}
+
+			  </div>
 		
 		  <div id='gameQuests' class="col-xs-3">
 		    <div class="listHeading">
@@ -85,6 +101,10 @@
 			<br>
 		<hr>
 
+</script>
+
+<script id='path-chosen' type='text/x-handlebars-template'>
+	<h4 class='col-xs-5 pull-right'> Your path : {{path}} </h4>
 </script>
 <!--<script id='game-achievements' type='text/x-handlebars-template'>
 

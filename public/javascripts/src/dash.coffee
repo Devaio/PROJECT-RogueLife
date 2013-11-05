@@ -1,9 +1,11 @@
 $ ->
 	charSource =  $('#char-stats').html()
 	dashSource = $('#dash-board').html()
+	pathSource = $('#path-chosen').html()
 
-	updateChar = Handlebars.compile(charSource)
-	updateDash = Handlebars.compile(dashSource)
+	handleChar = Handlebars.compile(charSource)
+	handleDash = Handlebars.compile(dashSource)
+	handlePath = Handlebars.compile(pathSource)
 
 
 
@@ -13,29 +15,39 @@ $ ->
 	$charStats = $('#charStats')
 	$game = $('#gameAch')
 	$current = $('#currentQuests')
+	$path = $('#currentPath')
 
+	updateDashboard = (char) ->
+		$dash.html handleDash char
+		$charStats.html handleChar char
+		$path.html handlePath char
 
 	$.get '/charData', {}, (userCharacter) ->
 		console.log userCharacter
-		$dash.html updateDash userCharacter
-		$charStats.html updateChar userCharacter
+		updateDashboard(userCharacter)
 
 
 	$(document).on 'click', '.choosePath', () ->
 		$('#pathChooser').fadeOut()
 		$.get '/charData', {}, (userCharacter) ->
-			$dash.html updateDash userCharacter
-			$charStats.html updateChar userCharacter
+			updateDashboard(userCharacter)
 
 	$(document).on 'click', '.addQuest', () ->
-		$('#currentQuests').append($('<p class="quest">QuestTest</p>'))
+		$('.currentQuestList').append($('<p class="quest">Embark on a new quest!</p>'))
 		$('.quest').hallo({editable : true})
+
+	$(document).on 'click', '.addDaily', () ->
+		$('.dailyQuestList').append($('<p class="daily">Enter new Daily</p>'))
+		$('.daily').hallo({editable : true})
 
 
 	$(document).on 'hallodeactivated', '.quest', () ->
 		$(@).fadeOut('fast').fadeIn('fast')
 		quest = $(@).text()
-		console.log quest
 		$.post '/addQuest', {currentQuest : quest}, (data) ->
-			console.log 'datafromhallodeactive', data
+
+	$(document).on 'hallodeactivated', '.daily', () ->
+		$(@).fadeOut('fast').fadeIn('fast')
+		daily = $(@).text()
+		$.post '/addDaily', {daily : daily}, (data) ->
 	return

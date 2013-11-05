@@ -15,6 +15,8 @@ SteamStrategy = require('passport-steam').Strategy
 mongoose = require 'mongoose'
 app = express();
 pathTasks = require './pathtasks'
+moment = require 'moment'
+moment().format()
 
 # all environments
 app.set 'port', process.env.PORT || 3000
@@ -74,10 +76,10 @@ passport.use new LocalStrategy (username, password, done) ->
 
 #Setting Up passport for Steam Auth
 passport.use new SteamStrategy {
-	returnURL: 'http://'+process.env.domain+'/auth/steam/return', 
-	realm: 'http://'+process.env.domain+'/' 
-	},(identifier, done) ->
-		User.findByOpenID { openId: identifier }, (err, user) ->
+	returnURL: 'http://127.0.0.1:3000/auth/steam/return', 
+	realm: 'http://http://127.0.0.1:3000/' 
+	}, (identifier, done) ->
+		Character.findByOpenID { openId: identifier }, (err, user) ->
 		if err
 			return done(err)
 		if !user
@@ -90,6 +92,7 @@ Character = mongoose.model 'Character', {
 	username : {type : String, required : true, unique : true},
 	email : {type: String, required : true, unique : true},
 	password : {type : String, required : true},
+	openID : {type : String},
 	health : {type : Number, default : 100},
 	currentHealth : {type : Number, default : 100}
 	mana : {type : Number, default : 50},
@@ -98,7 +101,8 @@ Character = mongoose.model 'Character', {
 	level : {type : Number, default : 1},
 	currentQuests : {type: Array, default : []},
 	completedQuests : {type: Array, default : []},
-	path : {type : String}
+	dailies : {type: Array, default:[]},
+	path : {type : String},
 	avatar : {type : String}
 }
 
@@ -111,7 +115,7 @@ if 'development' == app.get('env')
 
 #BASIC ROUTES
 app.get '/', (req, res) ->
-	res.render 'index'
+	res.render 'index', {userCharacter : req.user}
 	
 
 app.get '/login', (req, res) ->
@@ -177,10 +181,17 @@ app.post '/chosenpath', (req, res) ->
 	res.send 'success!'
 	
 app.post '/addQuest', (req, res) ->
-	Character.update {username : req.user.username}, {$push : {currentQuests : req.body.currentQuest}}, (err, char) ->
+	Character.update {username : req.user.username}, {$push : {currentQuests : {questName : req.body.currentQuest, startQuest: moment() }}}, (err, char) ->
 		if err
 			console.log 'error questadd', err
 	res.send 'new quest!'
+
+app.post '/addDaily', (req, res) ->
+	Character.update {username : req.user.username}, {$push : {dailies : req.body.daily}}, (err, char) ->
+		if err
+			console.log 'error dailyadd', err
+	res.send 'new daily!'
+
 
 
 
@@ -188,22 +199,25 @@ app.post '/addQuest', (req, res) ->
 
 # Steam Authentication
 app.get '/auth/steam/', passport.authenticate('steam'), (req, res) ->
+	res.redirect '/'
 	return
  
 # {steamLogin : req.query} in return
-app.get '/auth/steam/callback',passport.authenticate('steam', {failureRedirect : '/login'}), (req, res) ->
+app.get '/auth/steam/callback', passport.authenticate('steam'), (req, res) ->
 	console.log 'auth steam cb', req.user
 	res.redirect '/'
 	return
 
 app.get '/auth/steam/return', (req, res) ->
-	res.send req.query
-	#res.render '/' # {steamLogin : req.query}
+	console.log 'steam user', req.user
+	res.redirect '/' # {steamLogin : req.query}
 	return
 
-app.get '/users/logout', (req, res) ->
-	req.session.destroy (err) ->
+app.get '/logout', (req, res) ->
+	req.logOut() 
 	res.redirect '/'
+	
+
 
 	
 

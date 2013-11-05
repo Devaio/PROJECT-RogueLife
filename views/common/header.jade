@@ -22,14 +22,14 @@ html
 						// place user avatar img here
 						span Welcome, #{userCharacter.username}!
 						br
-						a(href="/users/logout") Logout
+						a(href="/logout") Logout
 				.collapse.navbar-collapse.navbar-ex1-collapse
 					ul.nav.navbar-nav
 						li
 							-if(typeof userCharacter == 'undefined')
 								a(href='/login') My Character
 							-else
-								a(href='/#{userCharacter.username}') My Character
+								a(href='/#{userCharacter._id}') My Character
 						li
 							a(href='#') Link
 						li.dropdown
