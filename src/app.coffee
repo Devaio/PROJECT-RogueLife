@@ -74,22 +74,33 @@ passport.use new LocalStrategy (username, password, done) ->
 		return done(null, user)
 	
 
-#Setting Up passport for Steam Auth
+# #Setting Up passport for Steam Auth
+# passport.use new SteamStrategy {
+# 	returnURL: 'http://127.0.0.1:3000/auth/steam/return', 
+# 	realm: 'http://http://127.0.0.1:3000/' 
+# 	}, (identifier, profile, done) ->
+# 		# Character.findByOpenID { openId: identifier }, (err, user) ->
+# 		# if err
+# 		# 	return done(err)
+# 		# if !user
+# 		# 	return done(null, false, {message : 'Incorrect username'})
+# 		# if password isnt user.password
+# 		# 	return done(null, false, {message : 'Incorrect password'})
+# 		# return done(null, user)
+# 		profile.identifier = identifier
+# 		console.log 'prof', profile
+# 		return done(null, profile)
+
+
+# Setting Up OpenID for Steam Auth
 passport.use new SteamStrategy {
-	returnURL: 'http://127.0.0.1:3000/auth/steam/return', 
-	realm: 'http://http://127.0.0.1:3000/' 
-	}, (identifier, profile, done) ->
-		# Character.findByOpenID { openId: identifier }, (err, user) ->
-		# if err
-		# 	return done(err)
-		# if !user
-		# 	return done(null, false, {message : 'Incorrect username'})
-		# if password isnt user.password
-		# 	return done(null, false, {message : 'Incorrect password'})
-		# return done(null, user)
-		profile.identifier = identifier
-		console.log 'prof', profile
-		return done(null, profile)
+	returnURL: 'http://roguelife.herokuapp.com/auth/steam/return',
+	realm: 'http://roguelife.herokuapp.com/'
+	},
+	(identifier, done) ->
+		User.findByOpenID { openId: identifier }, (err, user) ->
+			return done(err, user);
+		return
 
 Character = mongoose.model 'Character', {
 	username : {type : String, required : true, unique : true},
@@ -207,17 +218,18 @@ app.post '/updateDaily', (req, res) ->
 
 
 # Steam Authentication
-app.get '/auth/steam/', passport.authenticate('steam')
+app.get '/auth/steam/', passport.authenticate 'steam', (req, res)->
+	res.send 'steamsuccess'
  
 # {steamLogin : req.query} in return
-app.get '/auth/steam/callback', passport.authenticate('steam'), (req, res) ->
+app.get '/auth/steam/callback', passport.authenticate 'steam', (req, res) ->
 	console.log 'auth steam cb', req.user
 	res.redirect '/'
 	return
 
-app.get '/auth/steam/return', (req, res) ->
-	console.log 'steam user', req.user
-	res.redirect '/' # {steamLogin : req.query}
+app.get '/auth/steam/return', passport.authenticate 'steam', (req, res) ->
+	console.log 'steam req.user', req.user
+	res.send req.query
 	return
 
 app.get '/logout', (req, res) ->
