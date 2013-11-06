@@ -173,7 +173,6 @@ app.get '/charData', app.isAuthenticated, (req, res) ->
 
 
 app.get '/users/:id', app.isAuthenticated, (req, res) ->
-	console.log 'USER IN DASH', req.user
 	Character.find {username : req.user.username}, (err, data) ->
 		if err
 			console.log 'error', err
@@ -206,11 +205,11 @@ app.post '/signup', (req, res) ->
 
 
 # Choosing habit path
-app.post '/chosenpath', (req, res) ->
+app.post '/chosenpath', app.isAuthenticated, (req, res) ->
 	console.log 'user', req.user
 	console.log 'BODY PATH', req.body.path
-	Character.update {username : req.user.username}, {$set : {path : req.body.path}}, (err, char) ->
-		char = char[0]
+	Character.findOneAndUpdate {username : req.user.username}, {path : req.body.path}, (err, char) ->
+		# char = char[0]
 		console.log 'CHAR!!!', char
 		if err
 			console.log 'error choosepath', err
