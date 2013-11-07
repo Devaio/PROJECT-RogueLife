@@ -9,6 +9,21 @@
     handleChar = Handlebars.compile(charSource);
     handleDash = Handlebars.compile(dashSource);
     handlePath = Handlebars.compile(pathSource);
+    Handlebars.registerHelper("each_upto", function(ary, max, options) {
+      var i, result;
+      if (!ary || ary.length === 0) {
+        return options.inverse(this);
+      }
+      result = [];
+      i = max;
+      while (i > 0) {
+        if (ary[i] !== void 0) {
+          result.push(options.fn(ary[i]));
+        }
+        --i;
+      }
+      return result.join("");
+    });
     $dash = $('#dashBoard');
     $completed = $('#completedQuests');
     $current = $('#currentQuests');
@@ -26,6 +41,24 @@
       $dash.html(handleDash(char));
       $charStats.html(handleChar(char));
       return $path.html(handlePath(char));
+    };
+    checkOffQuest = function(type, el) {
+      var expGain, questDone, questName;
+      questDone = $(el).parent();
+      questName = $(el).next().text();
+      if (type === 'quest') {
+        expGain = Math.floor(Math.random() * 25 + 1);
+      } else {
+        expGain = Math.floor(Math.random() * 60 + 1);
+      }
+      console.log(questName);
+      return questDone.fadeOut('slow', function() {
+        return socket.emit('finish' + type, {
+          user: currentUser,
+          questName: questName,
+          expGain: expGain
+        });
+      });
     };
     $.get('/charData', {}, function(userCharacter) {
       console.log(userCharacter);
@@ -86,31 +119,17 @@
         dailyName: daily
       }, function() {});
     });
-    checkOffQuest = function(type, el) {
-      var expGain, questDone, questName;
-      questDone = $(el).parent();
-      questName = $(el).next().text();
-      if (type === 'quest') {
-        expGain = Math.floor(Math.random() * 25 + 1);
-      } else {
-        expGain = Math.floor(Math.random() * 60 + 1);
-      }
-      console.log(questName);
-      questDone.fadeOut();
-      return socket.emit('finish' + type, {
-        user: currentUser,
-        questName: questName,
-        expGain: expGain
-      });
-    };
     $(document).on('click', '.questStatus', function() {
       return checkOffQuest('Quest', this);
     });
     $(document).on('click', '.dailyStatus', function() {
       return checkOffQuest('Daily', this);
     });
-    socket.on('connected', function(data) {
-      return console.log('connected');
+    $(document).on('mouseenter', '.quest, .daily', function() {
+      return $(this).addClass('animated bounceOut');
+    });
+    $(document).on('mouseleave', '.quest, .daily', function() {
+      return $(this).removeClass('animated bounceOut');
     });
     socket.on('updateChar', function(character) {
       console.log(character);

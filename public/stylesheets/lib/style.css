@@ -61,6 +61,10 @@ body {
 .dropdown-submenu:hover > a {
   background-color: rgba(50,50,50,0.5);
   -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 .mainLogo {
   font-family: megapixelregular;
@@ -198,7 +202,7 @@ body {
   display: inline-block;
   width: 10px;
   height: 10px;
-  background-color: #f00;
+  background-color: #008000;
 }
 .questTimer {
   display: inline-block;
@@ -267,4 +271,37 @@ body {
   top: 5px;
   left: -2%;
   vertical-align: sub;
+}
+.questDelete,
+.dailyDelete {
+  margin-right: -3px;
+  color: #fff;
+  margin-left: 5px;
+  text-align: center;
+  vertical-align: super;
+  display: inline-block;
+  width: 1em;
+  height: 1.2em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #f00;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+.questDelete:hover,
+.dailyDelete:hover {
+  cursor: pointer;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  color: #000;
+  background-color: #a52a2a;
 }

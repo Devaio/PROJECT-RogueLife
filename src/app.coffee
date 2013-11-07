@@ -53,11 +53,11 @@ app.isAuthenticated = (req, res, next) ->
 
 #Passport needs to serialize to support persistent login sessions
 passport.serializeUser (user, done) ->
-	done null, user.id
+	done null, user._id
 		
 
 passport.deserializeUser (id, done) ->
-	Character.findById id, (err, user) ->
+	Character.findOne {_id : id}, (err, user) ->
 		done err, user
 				
 	
@@ -104,6 +104,7 @@ Character = mongoose.model 'Character', {
 	experience : {type : Number, default : 0},
 	level : {type : Number, default : 1},
 	maxExperience : {type : Number, default : 150},
+	expPerc : {type : Number},
 	currentQuests : {type: Array, default : []},
 	completedQuests : {type: Array, default : []},
 	dailies : {type: Array, default:[]},
@@ -216,23 +217,24 @@ app.get '/auth/google/return', passport.authenticate 'google', {
 	
 
 socketUpdateChar = (data, socket) ->
-	Character.update {username : data.user.username}, {$inc : {experience : data.expGain }}, (err, char) ->
+	Character.findOneAndUpdate {username : data.user.username}, {$inc : {experience : data.expGain }}, (err, char) ->
+		console.log 'updateCHAR',char
+		console.log 'charexp : ', char.experience
 		levelUp = char.level
 		expUp = char.maxExperience
-		if char.experience > char.maxExperience
-			Character.update {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp) * 1.5}}
-			console.log 'updated'
-	Character.find {username : data.user.username}, (err, char) ->
-		charToUpdate = char[0]
-		socket.emit 'updateChar', charToUpdate
+		expPerc =  (char.experience/char.maxExperience) * 100
+		if char.experience > expUp
+			Character.findOneAndUpdate {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp)}}, (err, char) ->
+			Character.findOneAndUpdate {username : data.user.username}, {$set : {experience : 0}},  (err, char) ->
+		Character.findOneAndUpdate {username : data.user.username}, {$set : {expPerc : expPerc}}, (err, char) ->
+		Character.find {username : data.user.username}, (err, char) ->
+			charToUpdate = char[0]
+			socket.emit 'updateChar', charToUpdate
 
 ### SOCKETS ###
 user = {}
 io.sockets.on 'connection', (socket) ->
 	user[socket.id] = socket.id
-
-	io.sockets.emit 'connected', {id : socket.id}
-	# socket.on 'updateDaily', (dailyName) ->
 
 	socket.on 'finishQuest', (data) ->
 		Character.update {username : data.user.username}, {$pull : {currentQuests : {questName : data.questName} }}, (err, char) ->

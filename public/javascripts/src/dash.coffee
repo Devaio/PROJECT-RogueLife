@@ -7,8 +7,16 @@ $ ->
 	handleChar = Handlebars.compile(charSource)
 	handleDash = Handlebars.compile(dashSource)
 	handlePath = Handlebars.compile(pathSource)
+	Handlebars.registerHelper "each_upto", (ary, max, options) ->
+		return options.inverse(this)  if not ary or ary.length is 0
+		result = []
+		i = max
 
-
+		while i > 0
+			if ary[i] isnt undefined
+				result.push options.fn(ary[i])
+			--i
+		result.join ""
 
 	$dash = $('#dashBoard')
 	$completed = $('#completedQuests')
@@ -24,6 +32,18 @@ $ ->
 		$dash.html handleDash char
 		$charStats.html handleChar char
 		$path.html handlePath char
+
+	checkOffQuest = (type, el) ->
+		questDone = $(el).parent()
+		questName = $(el).next().text()
+		if type is 'quest'
+			expGain = Math.floor(Math.random()*25 + 1)
+		else
+			expGain = Math.floor(Math.random()*60 + 1)
+		console.log questName
+		questDone.fadeOut('slow', () -> # need better animation - sword slash maybe? also currently not fading
+			socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain } #this will remove the task from the database and give the user XP
+		)
 
 	$.get '/charData', {}, (userCharacter) ->
 		console.log userCharacter
@@ -66,25 +86,19 @@ $ ->
 		daily = $(@).text()
 		$.post '/updateDaily', {dailyName : daily}, () ->
 		
-	checkOffQuest = (type, el) ->
-		questDone = $(el).parent()
-		questName = $(el).next().text()
-		if type is 'quest'
-			expGain = Math.floor(Math.random()*25 + 1)
-		else
-			expGain = Math.floor(Math.random()*60 + 1)
-		console.log questName
-		questDone.fadeOut() # need better animation - sword slash maybe?
-		socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain } #this will remove the task from the database and give the user XP
-
+	
 	$(document).on 'click', '.questStatus', () ->
 		checkOffQuest('Quest', @)
 
 	$(document).on 'click', '.dailyStatus', () ->
 		checkOffQuest('Daily', @)
 
-	socket.on 'connected', (data) ->
-		console.log 'connected'
+	$(document).on 'mouseenter', '.quest, .daily', () ->
+		$(@).addClass('animated bounceOut')
+
+	$(document).on 'mouseleave', '.quest, .daily', () ->
+		$(@).removeClass('animated bounceOut')
+
 	socket.on 'updateChar', (character) ->
 		console.log character
 		updateDashboard(character)

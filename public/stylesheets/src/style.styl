@@ -72,7 +72,7 @@ body
 	height 50px
 .dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a
 	background-color rgba(50,50,50,.5)
-	-webkit-transition all 0.2s ease-in-out
+	transition all 0.2s ease-in-out
 .mainLogo
 	font-family megapixelregular
 	font-size 8em
@@ -161,7 +161,7 @@ body
 	display inline-block
 	width 10px
 	height 10px
-	background-color red
+	background-color green
 .questTimer
 	display inline-block
 	position relative
@@ -195,6 +195,21 @@ body
 	top 5px
 	left -2%
 	vertical-align sub
-
-
+.questDelete, .dailyDelete
+	margin-right -3px
+	color white
+	margin-left 5px
+	text-align center
+	vertical-align super
+	display inline-block
+	width 1em
+	height 1.2em
+	border-radius 5px
+	background-color red
+	transition all 0.2s ease-in-out
+.questDelete:hover, .dailyDelete:hover
+	cursor pointer
+	transition all 0.2s ease-in-out
+	color black
+	background-color brown
 
