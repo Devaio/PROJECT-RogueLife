@@ -217,9 +217,15 @@ app.get '/auth/google/return', passport.authenticate 'google', {
 
 socketUpdateChar = (data, socket) ->
 	Character.update {username : data.user.username}, {$inc : {experience : data.expGain }}, (err, char) ->
+		levelUp = char.level
+		expUp = char.maxExperience
+		if char.experience > char.maxExperience
+			Character.update {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp) * 1.5}}
+			console.log 'updated'
 	Character.find {username : data.user.username}, (err, char) ->
 		charToUpdate = char[0]
 		socket.emit 'updateChar', charToUpdate
+
 ### SOCKETS ###
 user = {}
 io.sockets.on 'connection', (socket) ->

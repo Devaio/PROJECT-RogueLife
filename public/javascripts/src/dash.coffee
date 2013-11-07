@@ -30,8 +30,7 @@ $ ->
 		updateDashboard(userCharacter)
 		$('.questName').hallo({editable : true})
 		$('.dailyName').hallo({editable : true})
-		window.currentUser = userCharacter
-		console.log 'CURRENT', currentUser
+		window.currentUser = userCharacter # makes available for sockets
 
 
 	$(document).on 'click', '.choosePath', () ->
@@ -89,7 +88,7 @@ $ ->
 	socket.on 'updateChar', (character) ->
 		console.log character
 		updateDashboard(character)
-
+		window.currentUser = character
 
 
 

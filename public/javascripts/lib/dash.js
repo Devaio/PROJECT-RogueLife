@@ -36,8 +36,7 @@
       $('.dailyName').hallo({
         editable: true
       });
-      window.currentUser = userCharacter;
-      return console.log('CURRENT', currentUser);
+      return window.currentUser = userCharacter;
     });
     $(document).on('click', '.choosePath', function() {
       $('#pathChooser').fadeOut();
@@ -115,7 +114,8 @@
     });
     socket.on('updateChar', function(character) {
       console.log(character);
-      return updateDashboard(character);
+      updateDashboard(character);
+      return window.currentUser = character;
     });
   });
 
