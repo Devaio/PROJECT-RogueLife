@@ -16,6 +16,7 @@
     "passport-local": "~0.1.6",
     "coffee-script": "~1.6.3",
     "socket.io": "~0.9.16",
-    "moment": "~2.4.0"
+    "moment": "~2.4.0",
+    "passport-google": "~0.3.0"
   }
 }

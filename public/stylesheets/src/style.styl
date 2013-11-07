@@ -1,25 +1,37 @@
 // Functions
 vendor(prop, args)
-        -webkit-{prop} args
-        -moz-{prop} args
-        -ms-{prop} args
-        -o-{prop} args
-        {prop} args
+    -webkit-{prop} args
+    -moz-{prop} args
+    -ms-{prop} args
+    -o-{prop} args
+    {prop} args
 background-linear-gradient(startPoint, startColor, startInterval, endColor, endInterval)
-        background-color startColor
-        background-image -webkit-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
-        background-image -moz-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
-        background-image -ms-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
-        background-image -o-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
-        background-image linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+    background-color startColor
+    background-image -webkit-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+    background-image -moz-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+    background-image -ms-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+    background-image -o-linear-gradient(startPoint, startColor startInterval, endColor endInterval)
+    background-image linear-gradient(startPoint, startColor startInterval, endColor endInterval)
 border-radius()
-        vendor('border-radius', arguments)
+    vendor('border-radius', arguments)
 background-image()
-        vendor('background-image', arguments)
+    vendor('background-image', arguments)
 transition()
-        vendor('transition', arguments)
+    vendor('transition', arguments)
 transform()
-        vendor('transform', arguments)
+    vendor('transform', arguments)
+backgroundImage(link)
+	position absolute
+	top 0
+	left 0
+	z-index -1
+	background-image url(link)
+	background-repeat no-repeat
+	background-position center
+	background-size cover
+	width 100%
+	height 100%
+
 body
 	font 14px "Cambria", Helvetica, Arial, sans-serif
 	padding-bottom 200px
@@ -34,15 +46,28 @@ body
 	background-color #90ADAC
 .navbar-toggle
 	background-color rgba(50,50,50,.5)
-.steamSignIn
-	background url('/images/steamSignOn.png')
-	width 118px 
-	height 51px
+.googleSignIn
+	background url('/images/googleSignOn.png')
+	width 185px 
+	height 41px
 	display inline-block
 	cursor pointer
 .signIn
 	min-width 50%
 	max-width 70%
+	background-color rgba(255,255,255,.7)
+	border-radius 5px
+	padding 10px
+.signLogUp
+	padding 5px
+	position relative
+	width auto
+	height auto
+	background-color #90ADAC
+	border thin solid gainsboro
+	border-radius 2px
+.signUp a
+	color #333
 #inputEmail1, #inputPassword1, #inputUserName1
 	height 50px
 .dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a
@@ -74,19 +99,19 @@ body
 	margin-right 4%
 	margin-left 1%
 .tabList
-	margin-left 1%
+	display inline-block
+	margin-bottom -5px
 .healthBar, .manaBar, .expBar
 	box-sizing border-box
-	border-radius 10px
 	border solid gray
 	height 25px
 	color white
 	font-family serif
 .healthBar
-	background-color #F13939
+	// background-color #F13939
 	margin-right 8.20%
 .manaBar
-	background-color #2929CC
+	// background-color #2929CC
 .expBar
 	color black
 	// background-color #660066
@@ -119,38 +144,57 @@ body
 	position absolute
 	right 5px
 	top 5px
-.completedQuestList, .currentQuestList, .dailyQuestList
-	list-style-type armenian
+	height auto
+	width auto
 .splashImage
-	position absolute
-	top 0
-	left 0
-	z-index -1
-	background-image url('/images/animatedforest.gif')
-	background-repeat no-repeat
-	background-position center
-	background-size cover
-	width 100%
-	height 100%
-.quest, .daily
+	backgroundImage('/images/animatedforest.gif')
+.quest, .daily, .completedQuest
 	display block
 	padding 5px
 	overflow hidden
 	border-bottom thin solid gainsboro
 	text-overflow ellipsis
 	white-space nowrap
-.taskStatus
-	display inline
+.quest:hover, .daily:hover, .completedQuest:hover
+	background-color rgba(150,150,150, .2)
+.questStatus, .dailyStatus
+	display inline-block
+	width 10px
+	height 10px
+	background-color red
 .questTimer
 	display inline-block
 	position relative
 	right 0px
-
-
-
-
-
-
+.loginImage
+	backgroundImage('/images/animatedlake.gif')
+.dashImage
+	backgroundImage('/images/dashbg.png')
+.bar
+	padding 0px
+	margin-right 3%
+	height 25px
+.levelIndicator
+	border thin solid gainsboro
+	margin-right 5px
+	text-align center
+	font-family serif
+.levelIndicator p
+	margin-top 1px
+	margin-bottom 1px
+.currentLevel
+	font-family serif
+	font-size 3em
+	text-align center
+.charAvatar
+	background-color red
+	margin-right 20px
+	height 10px
+.charSpan
+	position relative
+	top 5px
+	left -2%
+	vertical-align sub
 
 
 

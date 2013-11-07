@@ -16,7 +16,9 @@ html
 					a.navbar-brand(href='/') RogueLife
 				-if(typeof userCharacter == 'undefined')
 					.loginStatus.pull-right
-						a(href="/login") Login / Sign Up
+						.signLogUp
+							a(href="/login") Login / Sign Up
+
 				-else
 					.loginStatus.pull-right
 						// place user avatar img here

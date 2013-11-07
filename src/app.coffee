@@ -10,9 +10,8 @@ path = require 'path'
 passport = require 'passport'
 fs = require 'fs'
 LocalStrategy = require("passport-local").Strategy
-
 mongoose = require 'mongoose'
-
+GoogleStrategy = require('passport-google').Strategy
 pathTasks = require './pathtasks'
 moment = require 'moment'
 io = require 'socket.io'
@@ -28,9 +27,9 @@ app.use require('stylus').middleware(__dirname + '/../public')
 app.use express.methodOverride()
 app.configure () ->
 	app.use express.static(path.join(__dirname, '/../public'))
-	app.use express.cookieParser('catboard key')
+	app.use express.cookieParser()
 	app.use express.bodyParser()
-	app.use express.session()
+	app.use express.session( { secret : 'catboard key'})
 	app.use passport.initialize()
 	app.use passport.session()
 	app.use app.router
@@ -52,21 +51,15 @@ app.isAuthenticated = (req, res, next) ->
 		return next()
 	res.redirect '/login'
 
-# passport.serializeUser (user, done) ->
-#     done null, user
-
-# passport.deserializeUser (obj, done) ->
-#     done null, obj
-
 #Passport needs to serialize to support persistent login sessions
 passport.serializeUser (user, done) ->
-    done null, user.id
-        
+	done null, user.id
+		
 
 passport.deserializeUser (id, done) ->
-    Character.findById id, (err, user) ->
-        done err, user
-                
+	Character.findById id, (err, user) ->
+		done err, user
+				
 	
 
 #Setting Up Local Auth
@@ -79,18 +72,38 @@ passport.use new LocalStrategy (username, password, done) ->
 		if password isnt user.password
 			return done(null, false, {message : 'Incorrect password'})
 		return done(null, user)
-	
+
+#passport Google setup
+passport.use new GoogleStrategy {
+	returnURL: 'http://localhost:3000/auth/google/return',
+	realm: 'http://localhost:3000'
+	},
+	(identifier, profile, done) ->
+		console.log 'email', profile.emails[0]['value']
+		console.log 'ID: ', identifier
+		console.log 'PROF', profile
+		Character.find {openId: identifier}, (err, user) ->
+			done err, user[0]
+			if user.length is 0
+				newChar = new Character {
+					openId: identifier,
+					username: profile.displayName,
+					email: profile.emails[0]['value']
+				}
+				newChar.save()
+			return
+		return
 
 Character = mongoose.model 'Character', {
 	username : {type : String, required : true, unique : true},
+	openId : {type : String},
 	email : {type: String, required : true, unique : true},
-	password : {type : String, required : true},
+	password : {type : String},
 	health : {type : Number, default : 100},
-	currentHealth : {type : Number, default : 100}
-	mana : {type : Number, default : 50},
-	currentMana : {type : Number, default : 50},
+	currentHealth : {type : Number, default : 100},
 	experience : {type : Number, default : 0},
 	level : {type : Number, default : 1},
+	maxExperience : {type : Number, default : 150},
 	currentQuests : {type: Array, default : []},
 	completedQuests : {type: Array, default : []},
 	dailies : {type: Array, default:[]},
@@ -178,7 +191,7 @@ app.post '/removeQuest', (req, res) ->
 	res.send 'removed'
 
 app.post '/updateQuest', (req, res) ->
-	Character.update {username : req.user.username}, {$push : {currentQuests : {questName : req.body.questName, startQuest: moment().format('lll') }}}, (err, char) ->
+	Character.update {username : req.user.username}, {$push : {currentQuests : {questName : req.body.questName, startQuest: moment().fromNow() }}}, (err, char) ->
 	res.send 'updated'
 
 app.post '/removeDaily', (req, res) ->
@@ -192,22 +205,40 @@ app.post '/updateDaily', (req, res) ->
 	res.send 'updated'
 
 
+### GOOGLE ###
+app.get '/auth/google', passport.authenticate 'google'
 
-
-
+app.get '/auth/google/return', passport.authenticate 'google', {
+	session: true,
+	successRedirect: '/',
+	failureRedirect: '/login'}
 
 	
 
-
+socketUpdateChar = (data, socket) ->
+	Character.update {username : data.user.username}, {$inc : {experience : data.expGain }}, (err, char) ->
+	Character.find {username : data.user.username}, (err, char) ->
+		charToUpdate = char[0]
+		socket.emit 'updateChar', charToUpdate
 ### SOCKETS ###
 user = {}
 io.sockets.on 'connection', (socket) ->
 	user[socket.id] = socket.id
 
 	io.sockets.emit 'connected', {id : socket.id}
-	socket.on 'updateDaily', (dailyName) ->
+	# socket.on 'updateDaily', (dailyName) ->
 
+	socket.on 'finishQuest', (data) ->
+		Character.update {username : data.user.username}, {$pull : {currentQuests : {questName : data.questName} }}, (err, char) ->
+		Character.update {username : data.user.username}, {$push : {completedQuests : data.questName}}, (err, char) ->
+		socketUpdateChar(data, socket)
 
+	socket.on 'finishDaily', (data) ->
+		Character.update {username : data.user.username}, {$pull : {dailies : data.questName} }, (err, char) ->
+		socketUpdateChar(data, socket)
+
+		
+	
 	
 
 
