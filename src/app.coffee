@@ -63,11 +63,8 @@ passport.deserializeUser (id, done) ->
 	
 
 #Setting Up Local Auth
-prodURL = 'http://roguelife.herokuapp.com'
-localURL = 'http://localhost:3000'
+ip = process.env.IP ? 'http://localhost:3000'
 
-returnURLset = if process.env.PROD then prodURL else localURL
-realmset = if process.env.PROD then prodURL else localURL
 
 passport.use new LocalStrategy (username, password, done) ->
 	Character.findOne {username : username }, (err, user) ->
@@ -81,8 +78,8 @@ passport.use new LocalStrategy (username, password, done) ->
 
 #passport Google 
 passport.use new GoogleStrategy {
-	returnURL: returnURLset+'/auth/google/return',
-	realm: realmset
+	returnURL: ip+'/auth/google/return',
+	realm: ip
 	},
 	(identifier, profile, done) ->
 		console.log 'email', profile.emails[0]['value']
