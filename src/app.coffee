@@ -63,6 +63,12 @@ passport.deserializeUser (id, done) ->
 	
 
 #Setting Up Local Auth
+prodURL = 'http://roguelife.herokuapp.com'
+localURL = 'http://localhost:3000'
+
+returnURLset = if process.env.PROD then prodURL else localURL
+realmset = if process.env.PROD then prodURL else localURL
+
 passport.use new LocalStrategy (username, password, done) ->
 	Character.findOne {username : username }, (err, user) ->
 		if err
@@ -73,10 +79,10 @@ passport.use new LocalStrategy (username, password, done) ->
 			return done(null, false, {message : 'Incorrect password'})
 		return done(null, user)
 
-#passport Google setup
+#passport Google 
 passport.use new GoogleStrategy {
-	returnURL: 'http://localhost:3000/auth/google/return',
-	realm: 'http://localhost:3000'
+	returnURL: returnURLset+'/auth/google/return',
+	realm: realmset
 	},
 	(identifier, profile, done) ->
 		console.log 'email', profile.emails[0]['value']
@@ -101,6 +107,7 @@ Character = mongoose.model 'Character', {
 	password : {type : String},
 	health : {type : Number, default : 100},
 	currentHealth : {type : Number, default : 100},
+	hpPerc : {type : Number, default : 100},
 	experience : {type : Number, default : 0},
 	level : {type : Number, default : 1},
 	maxExperience : {type : Number, default : 150},
@@ -218,16 +225,17 @@ app.get '/auth/google/return', passport.authenticate 'google', {
 
 socketUpdateChar = (data, socket) ->
 	Character.findOneAndUpdate {username : data.user.username}, {$inc : {experience : data.expGain }}, (err, char) ->
-		
+
 		console.log 'updateCHAR',char
 		console.log 'charexp : ', char.experience
 		levelUp = char.level
 		expUp =  char.maxExperience
 		expPerc =  (char.experience/char.maxExperience) * 100
+		hpPerc = (char.currentHealth/char.health)*100
 		if char.experience > expUp
-			Character.findOneAndUpdate {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp)}}, (err, char) ->
-			Character.findOneAndUpdate {username : data.user.username}, {$set : {experience : 0}},  (err, char) ->
-		Character.findOneAndUpdate {username : data.user.username}, {$set : {expPerc : expPerc}}, (err, char) ->
+			Character.findOneAndUpdate {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0}}, (err, char) ->
+		Character.findOneAndUpdate {username : data.user.username}, {$set : {expPerc : expPerc, hpPerc : hpPerc}}, (err, char) ->
+			
 		Character.find {username : data.user.username}, (err, char) ->
 			charToUpdate = char[0]
 			socket.emit 'updateChar', charToUpdate
@@ -247,11 +255,8 @@ io.sockets.on 'connection', (socket) ->
 		socketUpdateChar(data, socket)
 
 	socket.on 'damage', (data) ->
-		Character.update {username : data.user.username}, {$set : {health : data.HP} }, (err, char) ->
-			socketUpdateChar(data, socket)
-		
-	
-	
-
-
+		Character.update {username : data.user.username}, {$inc : {currentHealth : -20}}, (err, char) ->
+			socket.emit 'damageTaken', char
+	socket.on 'death', (data) ->
+		Character.update {username : data.user.username}, {$set : {currentHealth : 100, level : 1, experience : 0, maxExperience : 150, path : undefined}}, (err, char) ->
 

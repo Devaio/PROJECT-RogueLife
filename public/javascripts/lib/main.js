@@ -6,7 +6,12 @@
       e.preventDefault();
       serialData = $(this).serialize();
       $.post("/signup", serialData, function(data) {
-        return console.log(data);
+        console.log(data);
+        return $.post('/signin', serialData, function(data) {
+          console.log(serialData);
+          console.log(data);
+          return window.location = data.redirect;
+        });
       });
       $('#signUpModal').modal('toggle');
     });

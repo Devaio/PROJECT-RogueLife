@@ -109,6 +109,11 @@ body {
   height: 25px;
   color: #fff;
   font-family: serif;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 .healthBar {
   margin-right: 8.2%;
@@ -304,4 +309,22 @@ body {
   transition: all 0.2s ease-in-out;
   color: #000;
   background-color: #a52a2a;
+}
+#levelUp {
+  display: none;
+  left: 30%;
+  position: absolute;
+  width: 30%;
+  height: 100px;
+  background-color: #dcdcdc;
+  border: double;
+  z-index: 1;
+  -webkit-transition: all 2s ease-in-out;
+  -moz-transition: all 2s ease-in-out;
+  -ms-transition: all 2s ease-in-out;
+  -o-transition: all 2s ease-in-out;
+  transition: all 2s ease-in-out;
+}
+.levelUpText {
+  text-align: center;
 }

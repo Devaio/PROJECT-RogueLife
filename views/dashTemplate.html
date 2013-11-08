@@ -17,9 +17,9 @@
 		    <ul class="activityList dailyQuestList list-unstyled"></ul>
 
 		    {{#each dailies}}
-				<li class="daily list-unstyled">
+				<li class="daily list-unstyled" data-time={{this.startDaily}}>
 				<div class="dailyStatus"></div>
-				<span class='dailyName' data-time={{this.startDaily}}>{{this.dailyName}}</span>
+				<span class='dailyName'>{{this.dailyName}}</span>
 				<div class="dailyDelete pull-right">&times</div>
 				</li>
 			{{/each}}
@@ -90,25 +90,25 @@
 </script>
 <script id='char-stats' type='text/x-handlebars-template'>
 
-		<div class='col-sm-1 charAvatar'>
+		<div class='col-sm-1 col-xs-5 charAvatar'>
 		<img(src='{{avatar}}')></img>
 		</div>
 
 
-		<div class='col-sm-1 levelIndicator'>
+		<div class='col-sm-1 col-xs-5 levelIndicator'>
 			<p> Level </p>
 			<p class='currentLevel'> {{level}}</p>
 		</div>
 
 
-		<div class="progress  col-sm-7 col-sm-offset-1 bar">
+		<div class="progress  col-sm-7 col-xs-12 col-sm-offset-1 bar">
 			
-			<div class="healthBar progress-bar progress-bar-danger" role='progressbar' aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style='width : 100%'> </div>
+			<div class="healthBar progress-bar progress-bar-danger" role='progressbar' aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style='width : {{hpPerc}}%'> </div>
 		</div><span class='charSpan'> {{currentHealth}} / {{health}} HP </span>
 
 			<br>
 			<br>
-		<div class="progress  col-sm-7 col-sm-offset-1 bar"> 
+		<div class="progress  col-sm-7 col-xs-12 col-sm-offset-1 bar"> 
 			
 			<div class="expBar progress-bar progress-bar-warning" role='progressbar' aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style='width : {{expPerc}}%'> </div>
 		</div><span class='charSpan'>{{experience}} / {{maxExperience}} XP </span>

@@ -41,10 +41,9 @@ $ ->
 		else
 			expGain = Math.floor(Math.random()*60 + 1)
 		console.log questName
-		questDone.fadeOut('slow', () -> # need better animation - sword slash maybe? also currently not fading
-			socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain } #this will remove the task from the database and give the user XP
-		)
-
+		questDone.fadeOut('fast', () ->
+			socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain }) #this will remove the task from the database and give the user XP
+	
 	setInterval () ->
 		questTimerUpdate()
 	, 1000
@@ -52,26 +51,28 @@ $ ->
 	questTimerUpdate = () ->
 		$('.quest').each () ->
 			currTime = moment().format('X')
-			console.log 'c',currTime
+			# console.log 'c',currTime
 			issueTime = $(@).find('.questTimer').attr('data-time')
-			console.log 'i',issueTime
+			# console.log 'i',issueTime
 			wait = currTime - issueTime
-			console.log 'w', wait
+			# console.log 'w', wait
 			waitConv = moment(issueTime*1000).fromNow()
-			console.log 'wc', waitConv
+			# console.log 'wc', waitConv
 			$(@).find('.questTimer').text(waitConv)
 
-	dailyTimer = () ->
+	dailyTimer = (user) ->
 		$('.daily').each () ->
 			currTime = moment().format('X')
+			console.log 'CURR', currTime
 			issueTime = $(@).attr('data-time')
+			console.log 'issueTime', issueTime
 			wait = currTime - issueTime
-			if wait > 100
-				hp = currentUser.health - 20
-				socket.emit 'damage', { user : currentUser, HP : hp}
-
-	dailyTimer()
-
+			console.log 'WAIT', wait
+			# if wait > 100
+			# 	$(@).attr('data-time', moment().format('X'))
+			# 	hp = user.currentHealth - 20
+			# 	socket.emit 'damage', { user : user, HP : hp, dailyName : $(@).find('.dailyName').text()}
+				
 
 
 	$.get '/charData', {}, (userCharacter) ->
@@ -79,6 +80,7 @@ $ ->
 		updateDashboard(userCharacter)
 		$('.questName').hallo({editable : true})
 		$('.dailyName').hallo({editable : true})
+		dailyTimer(userCharacter)
 		window.currentUser = userCharacter # makes available for sockets
 
 
@@ -102,7 +104,8 @@ $ ->
 		$.post '/removeQuest', {questName : quest}, () ->
 	
 	$(document).on 'hallodeactivated', '.questName', () ->
-		$(@).fadeOut('fast').fadeIn('fast')
+		$(@).fadeOut(100, () ->
+			$(@).fadeIn(100))
 		quest = $(@).text()
 		$.post '/updateQuest', {questName : quest}, () ->
 
@@ -111,7 +114,8 @@ $ ->
 		$.post '/removedaily', {dailyName : daily}, () ->
 
 	$(document).on 'hallodeactivated', '.dailyName', () ->
-		$(@).fadeOut('fast').fadeIn('fast')
+		$(@).fadeOut('100', () ->
+			$(@).fadeIn('100'))
 		daily = $(@).text()
 		$.post '/updateDaily', {dailyName : daily}, () ->
 		
@@ -123,16 +127,33 @@ $ ->
 		checkOffQuest('Daily', @)
 
 	$(document).on 'mouseenter', '.quest, .daily', () ->
-		$(@).addClass('animated pulse')
+		# $(@).addClass('animated pulse')
 
 	$(document).on 'mouseleave', '.quest, .daily', () ->
-		$(@).removeClass('animated pulse')
+		# $(@).removeClass('animated pulse')
+
+	$(document).on 'click', '.dailyDelete', () ->
+		daily = $(@).prev().text()
+		$.post '/removeDaily', {dailyName : daily}, () ->
+			console.log currentUser
+			updateDashboard currentUser
+
+	$(document).on 'click', '.questDelete', () ->
+		quest = $(@).prev().text()
+		$.post '/removeQuest', {questName : quest}, () ->
+			updateDashboard currentUser
 
 	socket.on 'updateChar', (character) ->
+		if character.level > currentUser.level
+			$('#levelUp').fadeIn('slow', () ->
+				$('#levelUp').addClass('animated flipOutX'))
 		console.log character
 		updateDashboard(character)
 		window.currentUser = character
 
+	socket.on 'damageTaken', (character) ->
+		if character.currentHealth <= 0
+			socket.emit 'death', character
 
 
 	return

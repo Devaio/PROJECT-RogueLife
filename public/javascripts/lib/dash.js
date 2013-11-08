@@ -52,7 +52,7 @@
         expGain = Math.floor(Math.random() * 60 + 1);
       }
       console.log(questName);
-      return questDone.fadeOut('slow', function() {
+      return questDone.fadeOut('fast', function() {
         return socket.emit('finish' + type, {
           user: currentUser,
           questName: questName,
@@ -67,32 +67,23 @@
       return $('.quest').each(function() {
         var currTime, issueTime, wait, waitConv;
         currTime = moment().format('X');
-        console.log('c', currTime);
         issueTime = $(this).find('.questTimer').attr('data-time');
-        console.log('i', issueTime);
         wait = currTime - issueTime;
-        console.log('w', wait);
         waitConv = moment(issueTime * 1000).fromNow();
-        console.log('wc', waitConv);
         return $(this).find('.questTimer').text(waitConv);
       });
     };
-    dailyTimer = function() {
+    dailyTimer = function(user) {
       return $('.daily').each(function() {
-        var currTime, hp, issueTime, wait;
+        var currTime, issueTime, wait;
         currTime = moment().format('X');
+        console.log('CURR', currTime);
         issueTime = $(this).attr('data-time');
+        console.log('issueTime', issueTime);
         wait = currTime - issueTime;
-        if (wait > 100) {
-          hp = currentUser.health - 20;
-          return socket.emit('damage', {
-            user: currentUser,
-            HP: hp
-          });
-        }
+        return console.log('WAIT', wait);
       });
     };
-    dailyTimer();
     $.get('/charData', {}, function(userCharacter) {
       console.log(userCharacter);
       updateDashboard(userCharacter);
@@ -102,6 +93,7 @@
       $('.dailyName').hallo({
         editable: true
       });
+      dailyTimer(userCharacter);
       return window.currentUser = userCharacter;
     });
     $(document).on('click', '.choosePath', function() {
@@ -131,7 +123,9 @@
     });
     $(document).on('hallodeactivated', '.questName', function() {
       var quest;
-      $(this).fadeOut('fast').fadeIn('fast');
+      $(this).fadeOut(100, function() {
+        return $(this).fadeIn(100);
+      });
       quest = $(this).text();
       return $.post('/updateQuest', {
         questName: quest
@@ -146,7 +140,9 @@
     });
     $(document).on('hallodeactivated', '.dailyName', function() {
       var daily;
-      $(this).fadeOut('fast').fadeIn('fast');
+      $(this).fadeOut('100', function() {
+        return $(this).fadeIn('100');
+      });
       daily = $(this).text();
       return $.post('/updateDaily', {
         dailyName: daily
@@ -158,16 +154,41 @@
     $(document).on('click', '.dailyStatus', function() {
       return checkOffQuest('Daily', this);
     });
-    $(document).on('mouseenter', '.quest, .daily', function() {
-      return $(this).addClass('animated pulse');
+    $(document).on('mouseenter', '.quest, .daily', function() {});
+    $(document).on('mouseleave', '.quest, .daily', function() {});
+    $(document).on('click', '.dailyDelete', function() {
+      var daily;
+      daily = $(this).prev().text();
+      return $.post('/removeDaily', {
+        dailyName: daily
+      }, function() {
+        console.log(currentUser);
+        return updateDashboard(currentUser);
+      });
     });
-    $(document).on('mouseleave', '.quest, .daily', function() {
-      return $(this).removeClass('animated pulse');
+    $(document).on('click', '.questDelete', function() {
+      var quest;
+      quest = $(this).prev().text();
+      return $.post('/removeQuest', {
+        questName: quest
+      }, function() {
+        return updateDashboard(currentUser);
+      });
     });
     socket.on('updateChar', function(character) {
+      if (character.level > currentUser.level) {
+        $('#levelUp').fadeIn('slow', function() {
+          return $('#levelUp').addClass('animated flipOutX');
+        });
+      }
       console.log(character);
       updateDashboard(character);
       return window.currentUser = character;
+    });
+    socket.on('damageTaken', function(character) {
+      if (character.currentHealth <= 0) {
+        return socket.emit('death', character);
+      }
     });
   });
 
