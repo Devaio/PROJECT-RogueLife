@@ -15,9 +15,6 @@ GoogleStrategy = require('passport-google').Strategy
 pathTasks = require './pathtasks'
 moment = require 'moment'
 io = require 'socket.io'
-io.configure () -> 
-  io.set "transports", ["xhr-polling"]
-  io.set "polling duration", 10
 app = express()
 
 # all environments
