@@ -19,7 +19,7 @@
 		    {{#each dailies}}
 				<li class="daily list-unstyled">
 				<div class="dailyStatus"></div>
-				<span class='dailyName'>{{this}}</span>
+				<span class='dailyName' data-time={{this.startDaily}}>{{this.dailyName}}</span>
 				<div class="dailyDelete pull-right">&times</div>
 				</li>
 			{{/each}}
@@ -50,7 +50,7 @@
 					<div class="questStatus"></div>
 					<span class='questName'>{{this.questName}}</span>
 					<div class="questDelete pull-right">&times</div>
-					<div class='questTimer pull-right text-muted'>{{this.startQuest}}</div>
+					<div class='questTimer pull-right text-muted' data-time={{this.startQuest}}></div>
 
 				</li>
 			{{/each}}

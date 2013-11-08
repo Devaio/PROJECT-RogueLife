@@ -45,6 +45,35 @@ $ ->
 			socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain } #this will remove the task from the database and give the user XP
 		)
 
+	setInterval () ->
+		questTimerUpdate()
+	, 1000
+
+	questTimerUpdate = () ->
+		$('.quest').each () ->
+			currTime = moment().format('X')
+			console.log 'c',currTime
+			issueTime = $(@).find('.questTimer').attr('data-time')
+			console.log 'i',issueTime
+			wait = currTime - issueTime
+			console.log 'w', wait
+			waitConv = moment(issueTime*1000).fromNow()
+			console.log 'wc', waitConv
+			$(@).find('.questTimer').text(waitConv)
+
+	dailyTimer = () ->
+		$('.daily').each () ->
+			currTime = moment().format('X')
+			issueTime = $(@).attr('data-time')
+			wait = currTime - issueTime
+			if wait > 100
+				hp = currentUser.health - 20
+				socket.emit 'damage', { user : currentUser, HP : hp}
+
+	dailyTimer()
+
+
+
 	$.get '/charData', {}, (userCharacter) ->
 		console.log userCharacter
 		updateDashboard(userCharacter)
@@ -60,7 +89,7 @@ $ ->
 			
 
 	$(document).on 'click', '.addQuest', () ->
-		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questTimer pull-right text-muted">'+moment().fromNow()+'</div></li>'))
+		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questTimer pull-right text-muted"></div></li>'))
 		$('.questName').hallo({editable : true})
 		
 
@@ -94,10 +123,10 @@ $ ->
 		checkOffQuest('Daily', @)
 
 	$(document).on 'mouseenter', '.quest, .daily', () ->
-		$(@).addClass('animated bounceOut')
+		$(@).addClass('animated pulse')
 
 	$(document).on 'mouseleave', '.quest, .daily', () ->
-		$(@).removeClass('animated bounceOut')
+		$(@).removeClass('animated pulse')
 
 	socket.on 'updateChar', (character) ->
 		console.log character

@@ -192,17 +192,17 @@ app.post '/removeQuest', (req, res) ->
 	res.send 'removed'
 
 app.post '/updateQuest', (req, res) ->
-	Character.update {username : req.user.username}, {$push : {currentQuests : {questName : req.body.questName, startQuest: moment().fromNow() }}}, (err, char) ->
+	Character.update {username : req.user.username}, {$push : {currentQuests : {questName : req.body.questName, startQuest: moment().format('X') }}}, (err, char) ->
 	res.send 'updated'
 
 app.post '/removeDaily', (req, res) ->
-	Character.update {username : req.user.username}, {$pull : {dailies :  req.body.dailyName}}, (err, char) ->
+	Character.update {username : req.user.username}, {$pull : {dailies :  {dailyName : req.body.dailyName }}}, (err, char) ->
 		if err
 			console.log 'err remove', err
 	res.send 'removed'
 
 app.post '/updateDaily', (req, res) ->
-	Character.update {username : req.user.username}, {$push : {dailies : req.body.dailyName }}, (err, char) ->
+	Character.update {username : req.user.username}, {$push : {dailies : {dailyName : req.body.dailyName, startDaily : moment().format('X') } }}, (err, char) ->
 	res.send 'updated'
 
 
@@ -218,10 +218,11 @@ app.get '/auth/google/return', passport.authenticate 'google', {
 
 socketUpdateChar = (data, socket) ->
 	Character.findOneAndUpdate {username : data.user.username}, {$inc : {experience : data.expGain }}, (err, char) ->
+		
 		console.log 'updateCHAR',char
 		console.log 'charexp : ', char.experience
 		levelUp = char.level
-		expUp = char.maxExperience
+		expUp =  char.maxExperience
 		expPerc =  (char.experience/char.maxExperience) * 100
 		if char.experience > expUp
 			Character.findOneAndUpdate {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp)}}, (err, char) ->
@@ -242,9 +243,12 @@ io.sockets.on 'connection', (socket) ->
 		socketUpdateChar(data, socket)
 
 	socket.on 'finishDaily', (data) ->
-		Character.update {username : data.user.username}, {$pull : {dailies : data.questName} }, (err, char) ->
+		Character.update {username : data.user.username}, {$pull : {dailies : {dailyName : data.questName}} }, (err, char) ->
 		socketUpdateChar(data, socket)
 
+	socket.on 'damage', (data) ->
+		Character.update {username : data.user.username}, {$set : {health : data.HP} }, (err, char) ->
+			socketUpdateChar(data, socket)
 		
 	
 	
