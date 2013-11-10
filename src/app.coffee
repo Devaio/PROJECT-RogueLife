@@ -253,7 +253,9 @@ io.sockets.on 'connection', (socket) ->
 
 	socket.on 'damage', (data) ->
 		Character.update {username : data.user.username}, {$inc : {currentHealth : -20}}, (err, char) ->
-			socket.emit 'damageTaken', char
+			Character.update {username : data.user.username}, {$set : {'dailies.startDaily' : moment().format('X')}}, (err, char) ->
+				socket.emit 'damageTaken', char
+	
 	socket.on 'death', (data) ->
 		Character.update {username : data.user.username}, {$set : {currentHealth : 100, level : 1, experience : 0, maxExperience : 150, path : undefined}}, (err, char) ->
 

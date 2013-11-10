@@ -102,12 +102,10 @@ body {
   margin-bottom: -5px;
 }
 .healthBar,
-.manaBar,
 .expBar {
   box-sizing: border-box;
   border: solid #808080;
-  height: 25px;
-  color: #fff;
+  height: 30px;
   font-family: serif;
   -webkit-transition: all 0.5s ease-in-out;
   -moz-transition: all 0.5s ease-in-out;
@@ -115,11 +113,18 @@ body {
   -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 }
-.healthBar {
-  margin-right: 8.2%;
+.ui-progressbar {
+  position: relative;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
-.expBar {
-  color: #000;
+.progress-label {
+  position: absolute;
+  top: 4px;
+  right: 0%;
 }
 .choosePath {
   background-color: #f5deb3;
@@ -256,6 +261,7 @@ body {
   margin-right: 5px;
   text-align: center;
   font-family: serif;
+  background-color: #f5deb3;
 }
 .levelIndicator p {
   margin-top: 1px;
@@ -270,12 +276,6 @@ body {
   background-color: #f00;
   margin-right: 20px;
   height: 10px;
-}
-.charSpan {
-  position: relative;
-  top: 5px;
-  left: -2%;
-  vertical-align: sub;
 }
 .questDelete,
 .dailyDelete {

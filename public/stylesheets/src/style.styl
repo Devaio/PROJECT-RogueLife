@@ -101,21 +101,20 @@ body
 .tabList
 	display inline-block
 	margin-bottom -5px
-.healthBar, .manaBar, .expBar
+.healthBar, .expBar
 	box-sizing border-box
 	border solid gray
-	height 25px
-	color white
+	height 30px
 	font-family serif
 	transition all 0.5s ease-in-out
-.healthBar
-	// background-color #F13939
-	margin-right 8.20%
-.manaBar
-	// background-color #2929CC
-.expBar
-	color black
-	// background-color #660066
+
+.ui-progressbar
+	position relative
+	transition all 0.5s ease-in-out
+.progress-label
+	position absolute
+	top 4px
+	right 0%
 .choosePath
 	background-color wheat
 	border-radius(5px)
@@ -180,6 +179,7 @@ body
 	margin-right 5px
 	text-align center
 	font-family serif
+	background-color wheat
 .levelIndicator p
 	margin-top 1px
 	margin-bottom 1px
@@ -191,11 +191,6 @@ body
 	background-color red
 	margin-right 20px
 	height 10px
-.charSpan
-	position relative
-	top 5px
-	left -2%
-	vertical-align sub
 .questDelete, .dailyDelete
 	margin-right -3px
 	color white

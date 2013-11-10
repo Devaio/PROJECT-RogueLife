@@ -101,17 +101,20 @@
 		</div>
 
 
-		<div class="progress  col-sm-7 col-xs-12 col-sm-offset-1 bar">
+		<div class="col-sm-7 col-xs-12 col-sm-offset-1">
 			
-			<div class="healthBar progress-bar progress-bar-danger" role='progressbar' aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style='width : {{hpPerc}}%'> </div>
-		</div><span class='charSpan'> {{currentHealth}} / {{health}} HP </span>
+			<div id='healthProgressbar' class="healthBar ui-progressbar" role='progressbar'> 
+		<div class='charSpan progress-label'> {{currentHealth}} / {{health}} HP </div>
+		</div></div>
 
 			<br>
 			<br>
-		<div class="progress  col-sm-7 col-xs-12 col-sm-offset-1 bar"> 
+
+		<div class="col-sm-7 col-xs-12 col-sm-offset-1"> 
 			
-			<div class="expBar progress-bar progress-bar-warning" role='progressbar' aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style='width : {{expPerc}}%'> </div>
-		</div><span class='charSpan'>{{experience}} / {{maxExperience}} XP </span>
+			<div id='experienceProgressbar' class="expBar ui-progressbar" role='progressbar'> 
+		<div class='charSpan progress-label'>{{experience}} / {{maxExperience}} XP </div>
+		</div></div>
 
 
 </script>

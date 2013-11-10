@@ -28,10 +28,18 @@ $ ->
 	$('.questName').hallo({editable : true})
 	$('.dailyName').hallo({editable : true})
 
+	updateCharBars = (char) ->
+		$('#experienceProgressbar').progressbar( {value : char.expPerc})
+		$('#experienceProgressbar').find('.ui-progressbar-value').css( {'background' : '#660066'})
+		$('#healthProgressbar').progressbar( {value : char.hpPerc})
+		$('#healthProgressbar').find('.ui-progressbar-value').css( {'background' : '#F13939'})
+
+
 	updateDashboard = (char) ->
 		$dash.html handleDash char
 		$charStats.html handleChar char
 		$path.html handlePath char
+		updateCharBars(char)
 
 	checkOffQuest = (type, el) ->
 		questDone = $(el).parent()
@@ -68,10 +76,10 @@ $ ->
 			console.log 'issueTime', issueTime
 			wait = currTime - issueTime
 			console.log 'WAIT', wait
-			# if wait > 100
-			# 	$(@).attr('data-time', moment().format('X'))
-			# 	hp = user.currentHealth - 20
-			# 	socket.emit 'damage', { user : user, HP : hp, dailyName : $(@).find('.dailyName').text()}
+			if wait > 30
+				$(@).attr('data-time', moment().format('X'))
+				hp = user.currentHealth - 20
+				socket.emit 'damage', { user : user, HP : hp}
 				
 
 
@@ -82,6 +90,7 @@ $ ->
 		$('.dailyName').hallo({editable : true})
 		dailyTimer(userCharacter)
 		window.currentUser = userCharacter # makes available for sockets
+		
 
 
 	$(document).on 'click', '.choosePath', () ->
@@ -91,14 +100,15 @@ $ ->
 			
 
 	$(document).on 'click', '.addQuest', () ->
-		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questTimer pull-right text-muted"></div></li>'))
+		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-muted"></div></li>'))
 		$('.questName').hallo({editable : true})
 		
 
 	$(document).on 'click', '.addDaily', () ->
-		$('.dailyQuestList').append($('<li class="daily list-unstyled"><div class="dailyStatus"></div><span class="dailyName">Enter a new Daily</span></li>'))
+		$('.dailyQuestList').append($('<li class="daily list-unstyled"><div class="dailyStatus"></div><span class="dailyName">Enter a new Daily</span><div class="dailyDelete pull-right">&times</div></li>'))
 		$('.dailyName').hallo({editable : true})
 
+	#editing quests - remove and re-adds them as name changes
 	$(document).on 'halloactivated', '.questName', () ->
 		quest = $(@).text()
 		$.post '/removeQuest', {questName : quest}, () ->
@@ -114,12 +124,14 @@ $ ->
 		$.post '/removedaily', {dailyName : daily}, () ->
 
 	$(document).on 'hallodeactivated', '.dailyName', () ->
-		$(@).fadeOut('100', () ->
-			$(@).fadeIn('100'))
+		$(@).fadeOut(100, () ->
+			$(@).fadeIn(100))
 		daily = $(@).text()
 		$.post '/updateDaily', {dailyName : daily}, () ->
 		
 	
+
+	# Completing quests
 	$(document).on 'click', '.questStatus', () ->
 		checkOffQuest('Quest', @)
 
@@ -147,9 +159,14 @@ $ ->
 		if character.level > currentUser.level
 			$('#levelUp').fadeIn('slow', () ->
 				$('#levelUp').addClass('animated flipOutX'))
+			$('#experienceProgressbar').progressbar( {value : 0})
 		console.log character
 		updateDashboard(character)
 		window.currentUser = character
+		$('#experienceProgressbar').progressbar( {value : character.expPerc})
+		$('#experienceProgressbar').find('.ui-progressbar-value').css( {'background' : '#660066'})
+		$('#healthProgressbar').progressbar( {value : character.hpPerc})
+		$('#healthProgressbar').find('.ui-progressbar-value').css( {'background' : '#F13939'})
 
 	socket.on 'damageTaken', (character) ->
 		if character.currentHealth <= 0
