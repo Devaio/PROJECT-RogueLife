@@ -104,6 +104,7 @@
           wait = currTime - issueTime;
           if (wait > 10) {
             $(this).attr('data-time', moment().format('X'));
+            $.post('/2010-04-01/Accounts/[AccountSid]/SMS/Messages.[format]', {});
             hp = user.currentHealth - 10;
             return socket.emit('damage', {
               user: user,
