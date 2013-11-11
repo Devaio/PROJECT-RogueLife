@@ -17,11 +17,18 @@
 		    <ul class="activityList dailyQuestList list-unstyled"></ul>
 
 		    {{#each dailies}}
+		    	{{#if this.finished}}
+				<li class="daily list-unstyled finished" data-time={{this.startDaily}}>
+				<span class='dailyName'>{{this.dailyName}}</span>
+				<div class="dailyDelete pull-right">&times</div>
+				</li>
+				{{else}}
 				<li class="daily list-unstyled" data-time={{this.startDaily}}>
 				<div class="dailyStatus"></div>
 				<span class='dailyName'>{{this.dailyName}}</span>
 				<div class="dailyDelete pull-right">&times</div>
 				</li>
+				{{/if}}
 			{{/each}}
 			  </div>
 

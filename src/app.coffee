@@ -255,8 +255,13 @@ io.sockets.on 'connection', (socket) ->
 		socketUpdateChar(data, socket)
 
 	socket.on 'finishDaily', (data) -> #for checking off dailies
-		Character.findOneAndUpdate {username : data.user.username}, {$pull : {dailies : {dailyName : data.questName}} }, (err, char) ->
-		socketUpdateChar(data, socket)
+		Character.findOne {username : data.user.username}, {}, (err, char) ->
+			char['dailies'].forEach (daily) ->
+				if daily.dailyName is data.questName
+					daily.finished = true
+					char.markModified('dailies')
+					char.save()
+					socketUpdateChar(data, socket)
 
 	socket.on 'damage', (data) ->
 		Character.findOneAndUpdate {username : data.user.username}, {$inc : {currentHealth : -10}}, (err, char) ->
@@ -264,6 +269,7 @@ io.sockets.on 'connection', (socket) ->
 			char['dailies'].forEach (daily) -> #loops through dailies array and sets timer
 				console.log daily
 				daily.startDaily = moment().format('X')
+				daily.finished = false
 			char['hpPerc'] = (char.currentHealth / char.health) * 100
 			char.markModified('dailies')
 			char.markModified('hpPerc')

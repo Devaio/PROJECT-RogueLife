@@ -114,14 +114,14 @@ $ ->
 		$.get '/charData', {}, (userCharacter) ->
 			dashUpdater.updateDashboard(userCharacter)
 			
-
+	#adding quests/dailies from button
 	$(document).on 'click', '.addQuest', () ->
-		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-muted"></div></li>'))
+		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-muted"></div></li>').addClass('animated bounceInRight'))
 		$('.questName').hallo({editable : true})
 		
 
 	$(document).on 'click', '.addDaily', () ->
-		$('.dailyQuestList').append($('<li class="daily list-unstyled"><div class="dailyStatus"></div><span class="dailyName">Enter a new Daily</span><div class="dailyDelete pull-right">&times</div></li>'))
+		$('.dailyQuestList').append($('<li class="daily list-unstyled"><div class="dailyStatus"></div><span class="dailyName">Enter a new Daily</span><div class="dailyDelete pull-right">&times</div></li>').addClass('animated bounceInLeft'))
 		$('.dailyName').hallo({editable : true})
 
 	#editing quests - remove and re-adds them as name changes
@@ -153,19 +153,19 @@ $ ->
 		dashUpdater.checkOffQuest('Daily', @)
 
 	$(document).on 'mouseenter', '.quest, .daily', () ->
-		# $(@).addClass('animated pulse')
+		$(@).addClass('animated pulse')
 
 	$(document).on 'mouseleave', '.quest, .daily', () ->
-		# $(@).removeClass('animated pulse')
+		$(@).removeClass('animated pulse')
 
 	$(document).on 'click', '.dailyDelete', () ->
 		daily = $(@).prev().text()
-		$(@).parent().fadeOut()
+		$(@).parent().addClass('animated hinge').fadeOut(1800)
 		$.post '/removeDaily', {dailyName : daily}, () ->
 		
 	$(document).on 'click', '.questDelete', () ->
 		quest = $(@).prev().text()
-		$(@).parent().fadeOut()
+		$(@).parent().addClass('animated hinge').fadeOut(1800)
 		$.post '/removeQuest', {questName : quest}, () ->
 
 	$(document).on 'click', '.closeButton', () ->

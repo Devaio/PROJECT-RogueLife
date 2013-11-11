@@ -143,13 +143,13 @@
       });
     });
     $(document).on('click', '.addQuest', function() {
-      $('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-muted"></div></li>'));
+      $('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-muted"></div></li>').addClass('animated bounceInRight'));
       return $('.questName').hallo({
         editable: true
       });
     });
     $(document).on('click', '.addDaily', function() {
-      $('.dailyQuestList').append($('<li class="daily list-unstyled"><div class="dailyStatus"></div><span class="dailyName">Enter a new Daily</span><div class="dailyDelete pull-right">&times</div></li>'));
+      $('.dailyQuestList').append($('<li class="daily list-unstyled"><div class="dailyStatus"></div><span class="dailyName">Enter a new Daily</span><div class="dailyDelete pull-right">&times</div></li>').addClass('animated bounceInLeft'));
       return $('.dailyName').hallo({
         editable: true
       });
@@ -194,12 +194,16 @@
     $(document).on('click', '.dailyStatus', function() {
       return dashUpdater.checkOffQuest('Daily', this);
     });
-    $(document).on('mouseenter', '.quest, .daily', function() {});
-    $(document).on('mouseleave', '.quest, .daily', function() {});
+    $(document).on('mouseenter', '.quest, .daily', function() {
+      return $(this).addClass('animated pulse');
+    });
+    $(document).on('mouseleave', '.quest, .daily', function() {
+      return $(this).removeClass('animated pulse');
+    });
     $(document).on('click', '.dailyDelete', function() {
       var daily;
       daily = $(this).prev().text();
-      $(this).parent().fadeOut();
+      $(this).parent().addClass('animated hinge').fadeOut(1800);
       return $.post('/removeDaily', {
         dailyName: daily
       }, function() {});
@@ -207,7 +211,7 @@
     $(document).on('click', '.questDelete', function() {
       var quest;
       quest = $(this).prev().text();
-      $(this).parent().fadeOut();
+      $(this).parent().addClass('animated hinge').fadeOut(1800);
       return $.post('/removeQuest', {
         questName: quest
       }, function() {});
