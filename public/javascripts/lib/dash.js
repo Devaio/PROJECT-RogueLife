@@ -88,30 +88,32 @@
       };
       questTimerUpdate = function() {
         return $('.quest').each(function() {
-          var currTime, issueTime, wait, waitConv;
+          var currTime, issueTime, timeText, wait, waitConv;
           currTime = moment().format('X');
           issueTime = $(this).find('.questTimer').attr('data-time');
           wait = currTime - issueTime;
           waitConv = moment(issueTime * 1000).fromNow();
-          return $(this).find('.questTimer').text(waitConv);
+          timeText = $(this).find('.questTimer').text(waitConv);
+          return console.log(timeText);
         });
       };
       dailyTimer = function(user) {
-        return $('.daily').each(function() {
-          var currTime, hp, issueTime, wait;
+        $('.daily').each(function() {
+          var currTime, issueTime, wait;
+          window.timer = false;
           currTime = moment().format('X');
           issueTime = $(this).attr('data-time');
           wait = currTime - issueTime;
           if (wait > 10) {
-            $(this).attr('data-time', moment().format('X'));
-            $.post('/2010-04-01/Accounts/[AccountSid]/SMS/Messages.[format]', {});
-            hp = user.currentHealth - 10;
-            return socket.emit('damage', {
-              user: user,
-              HP: hp
-            });
+            window.timer = true;
+            return $(this).attr('data-time', moment().format('X'));
           }
         });
+        if (timer) {
+          return socket.emit('damage', {
+            user: user
+          });
+        }
       };
       return {
         updateCharBars: updateCharBars,
@@ -122,7 +124,7 @@
       };
     })();
     setInterval(function() {
-      return dashUpdater.questTimerUpdate;
+      return dashUpdater.questTimerUpdate();
     }, 1000);
     $.get('/charData', {}, function(userCharacter) {
       console.log(userCharacter);
@@ -194,16 +196,12 @@
     $(document).on('click', '.dailyStatus', function() {
       return dashUpdater.checkOffQuest('Daily', this);
     });
-    $(document).on('mouseenter', '.quest, .daily', function() {
-      return $(this).addClass('animated pulse');
-    });
-    $(document).on('mouseleave', '.quest, .daily', function() {
-      return $(this).removeClass('animated pulse');
-    });
+    $(document).on('mouseenter', '.quest, .daily', function() {});
+    $(document).on('mouseleave', '.quest, .daily', function() {});
     $(document).on('click', '.dailyDelete', function() {
       var daily;
       daily = $(this).prev().text();
-      $(this).parent().addClass('animated hinge').fadeOut(1800);
+      $(this).parent().addClass('animated fadeOutLeft').fadeOut(1000);
       return $.post('/removeDaily', {
         dailyName: daily
       }, function() {});
@@ -211,7 +209,7 @@
     $(document).on('click', '.questDelete', function() {
       var quest;
       quest = $(this).prev().text();
-      $(this).parent().addClass('animated hinge').fadeOut(1800);
+      $(this).parent().addClass('animated fadeOutRight').fadeOut(1000);
       return $.post('/removeQuest', {
         questName: quest
       }, function() {});

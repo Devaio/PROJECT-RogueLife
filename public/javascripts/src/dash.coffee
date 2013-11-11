@@ -71,18 +71,20 @@ $ ->
 				issueTime = $(@).find('.questTimer').attr('data-time')
 				wait = currTime - issueTime
 				waitConv = moment(issueTime*1000).fromNow()
-				$(@).find('.questTimer').text(waitConv)
+				timeText = $(@).find('.questTimer').text(waitConv)
+				console.log timeText
 
 		dailyTimer = (user) ->
 			$('.daily').each () ->
+				window.timer = false
 				currTime = moment().format('X')
 				issueTime = $(@).attr('data-time')
 				wait = currTime - issueTime
 				if wait > 10
+					window.timer = true
 					$(@).attr('data-time', moment().format('X'))
-					$.post '/2010-04-01/Accounts/[AccountSid]/SMS/Messages.[format]', {}
-					hp = user.currentHealth - 10
-					socket.emit 'damage', { user : user, HP : hp }
+			if timer
+				socket.emit 'damage', { user : user}
 
 	
 		updateCharBars : updateCharBars,
@@ -93,10 +95,9 @@ $ ->
 		
 		
 		)()
-
 	
 	setInterval () ->
-		dashUpdater.questTimerUpdate
+		dashUpdater.questTimerUpdate()
 	, 1000
 
 	$.get '/charData', {}, (userCharacter) ->
@@ -153,19 +154,19 @@ $ ->
 		dashUpdater.checkOffQuest('Daily', @)
 
 	$(document).on 'mouseenter', '.quest, .daily', () ->
-		$(@).addClass('animated pulse')
+		# $(@).addClass('animated pulse')
 
 	$(document).on 'mouseleave', '.quest, .daily', () ->
-		$(@).removeClass('animated pulse')
+		# $(@).removeClass('animated pulse')
 
 	$(document).on 'click', '.dailyDelete', () ->
 		daily = $(@).prev().text()
-		$(@).parent().addClass('animated hinge').fadeOut(1800)
+		$(@).parent().addClass('animated fadeOutLeft').fadeOut(1000)
 		$.post '/removeDaily', {dailyName : daily}, () ->
 		
 	$(document).on 'click', '.questDelete', () ->
 		quest = $(@).prev().text()
-		$(@).parent().addClass('animated hinge').fadeOut(1800)
+		$(@).parent().addClass('animated fadeOutRight').fadeOut(1000)
 		$.post '/removeQuest', {questName : quest}, () ->
 
 	$(document).on 'click', '.closeButton', () ->

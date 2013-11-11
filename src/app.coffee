@@ -16,9 +16,11 @@ pathTasks = require './pathtasks'
 moment = require 'moment'
 io = require 'socket.io'
 #require the Twilio module and create a REST client
-client = require('twilio')('AC36f2d68f70b9ad20c70ef3f94918f1f4', '87e6de7ba3dfd2bedef2555e04eae90e')
-app = express()
 # twilio (813) 358-5022
+client = require('twilio')('AC36f2d68f70b9ad20c70ef3f94918f1f4', '87e6de7ba3dfd2bedef2555e04eae90e')
+sendgrid = require('sendgrid')('Devaio', 'ragnarok14')
+app = express()
+
 
 
 # all environments
@@ -280,5 +282,21 @@ io.sockets.on 'connection', (socket) ->
 		console.log 'DATADEATH', data
 		Character.findOneAndUpdate {username : data.username}, {$set : {currentHealth : 100, level : 1, experience : 0, maxExperience : 150, hpPerc : 100, expPerc : 0}}, (err, char) ->
 			console.log 'deadCHAR', char
+			sendgrid.send {
+				to : char.email,
+				from : 'admin@roguelife.herokuapp.com',
+				subject : 'Your character has died!',
+				text : 'Greetings '+ char.username + '!\n It seems that your lack of committment has gotten your character killed!'
+			}, (err, json) ->
+				console.log 'JSON!!!:',json
+			if char.phone
+				client.sendMessage {
+					to : char.phone
+					from : '+18133585022',
+					body : 'Greetings '+ char.username + '!\n It seems that your lack of committment has gotten your character killed!'
+				}, (err, resData) ->
+					console.log resData
+
+
 			socket.emit 'dead', char
 
