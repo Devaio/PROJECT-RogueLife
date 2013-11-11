@@ -35,6 +35,7 @@ $ ->
 	$('.dailyName').hallo({editable : true})
 
 
+
 	dashUpdater = (() ->
 
 		updateCharBars = (char) ->
@@ -79,6 +80,7 @@ $ ->
 				wait = currTime - issueTime
 				if wait > 10
 					$(@).attr('data-time', moment().format('X'))
+					$.post '/2010-04-01/Accounts/[AccountSid]/SMS/Messages.[format]', {}
 					hp = user.currentHealth - 10
 					socket.emit 'damage', { user : user, HP : hp }
 

@@ -15,7 +15,10 @@ GoogleStrategy = require('passport-google').Strategy
 pathTasks = require './pathtasks'
 moment = require 'moment'
 io = require 'socket.io'
+#require the Twilio module and create a REST client
+client = require('twilio')('AC36f2d68f70b9ad20c70ef3f94918f1f4', '87e6de7ba3dfd2bedef2555e04eae90e')
 app = express()
+# twilio (813) 358-5022
 
 
 # all environments
@@ -132,6 +135,7 @@ if 'development' == app.get('env')
 
 #BASIC ROUTES
 app.get '/', (req, res) ->
+	console.log req.user
 	res.render 'index', {userCharacter : req.user}
 	
 
