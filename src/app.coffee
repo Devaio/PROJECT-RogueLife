@@ -17,6 +17,7 @@ moment = require 'moment'
 io = require 'socket.io'
 app = express()
 
+
 # all environments
 app.set 'port', process.env.PORT || 3000
 app.set 'views', __dirname + '/../views'
@@ -97,6 +98,12 @@ passport.use new GoogleStrategy {
 			return
 		return
 
+
+
+console.log 'DAILIES!!!!!!!!', pathTasks.Dailies
+
+
+
 Character = mongoose.model 'Character', {
 	username : {type : String, required : true, unique : true},
 	openId : {type : String},
@@ -171,8 +178,7 @@ app.post '/signup', (req, res) ->
 			}
 			newUser.save()
 			console.log 'UserID', newUser._id
-			passport.authenticate 'local', (req, res) ->
-				res.redirect '/'
+			res.redirect '/'
 
 
 
@@ -222,15 +228,12 @@ app.get '/auth/google/return', passport.authenticate 'google', {
 
 socketUpdateChar = (data, socket) ->
 	Character.findOneAndUpdate {username : data.user.username}, {$inc : {experience : data.expGain }}, (err, char) ->
-
-		console.log 'updateCHAR',char
-		console.log 'charexp : ', char.experience
 		levelUp = char.level
 		expUp =  char.maxExperience
 		expPerc =  (char.experience/char.maxExperience) * 100
 		hpPerc = (char.currentHealth/char.health)*100
 		if char.experience > expUp
-			Character.findOneAndUpdate {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0}}, (err, char) ->
+			Character.findOneAndUpdate {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0, expPerc : 0}}, (err, char) ->
 		Character.findOneAndUpdate {username : data.user.username}, {$set : {expPerc : expPerc, hpPerc : hpPerc}}, (err, char) ->
 			
 		Character.find {username : data.user.username}, (err, char) ->
@@ -242,20 +245,30 @@ user = {}
 io.sockets.on 'connection', (socket) ->
 	user[socket.id] = socket.id
 
-	socket.on 'finishQuest', (data) ->
-		Character.update {username : data.user.username}, {$pull : {currentQuests : {questName : data.questName} }}, (err, char) ->
-		Character.update {username : data.user.username}, {$push : {completedQuests : data.questName}}, (err, char) ->
+	socket.on 'finishQuest', (data) -> # for checking off quests
+		Character.findOneAndUpdate {username : data.user.username}, {$pull : {currentQuests : {questName : data.questName} }}, (err, char) ->
+		Character.findOneAndUpdate {username : data.user.username}, {$push : {completedQuests : data.questName}}, (err, char) ->
 		socketUpdateChar(data, socket)
 
-	socket.on 'finishDaily', (data) ->
-		Character.update {username : data.user.username}, {$pull : {dailies : {dailyName : data.questName}} }, (err, char) ->
+	socket.on 'finishDaily', (data) -> #for checking off dailies
+		Character.findOneAndUpdate {username : data.user.username}, {$pull : {dailies : {dailyName : data.questName}} }, (err, char) ->
 		socketUpdateChar(data, socket)
 
 	socket.on 'damage', (data) ->
-		Character.update {username : data.user.username}, {$inc : {currentHealth : -20}}, (err, char) ->
-			Character.update {username : data.user.username}, {$set : {'dailies.startDaily' : moment().format('X')}}, (err, char) ->
-				socket.emit 'damageTaken', char
+		Character.findOneAndUpdate {username : data.user.username}, {$inc : {currentHealth : -10}}, (err, char) ->
+		Character.findOne {username : data.user.username}, {}, (err, char) ->
+			char['dailies'].forEach (daily) -> #loops through dailies array and sets timer
+				console.log daily
+				daily.startDaily = moment().format('X')
+			char['hpPerc'] = (char.currentHealth / char.health) * 100
+			char.markModified('dailies')
+			char.markModified('hpPerc')
+			char.save()
+			socket.emit 'damageTaken', char
 	
 	socket.on 'death', (data) ->
-		Character.update {username : data.user.username}, {$set : {currentHealth : 100, level : 1, experience : 0, maxExperience : 150, path : undefined}}, (err, char) ->
+		console.log 'DATADEATH', data
+		Character.findOneAndUpdate {username : data.username}, {$set : {currentHealth : 100, level : 1, experience : 0, maxExperience : 150, hpPerc : 100, expPerc : 0}}, (err, char) ->
+			console.log 'deadCHAR', char
+			socket.emit 'dead', char
 

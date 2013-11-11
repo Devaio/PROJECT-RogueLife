@@ -1,10 +1,14 @@
 $ ->
 	socket = io.connect()
-	charSource =  $('#char-stats').html()
 	dashSource = $('#dash-board').html()
 	pathSource = $('#path-chosen').html()
+	hpSource =  $('#hp-stats').html()
+	xpSource =  $('#xp-stats').html()
+	levelSource = $('#char-level').html()
 
-	handleChar = Handlebars.compile(charSource)
+	handleLevel = Handlebars.compile(levelSource)
+	handlehp = Handlebars.compile(hpSource)
+	handlexp = Handlebars.compile(xpSource)
 	handleDash = Handlebars.compile(dashSource)
 	handlePath = Handlebars.compile(pathSource)
 	Handlebars.registerHelper "each_upto", (ary, max, options) ->
@@ -21,74 +25,84 @@ $ ->
 	$dash = $('#dashBoard')
 	$completed = $('#completedQuests')
 	$current = $('#currentQuests')
-	$charStats = $('#charStats')
+	$hpBar = $('.hpText')
+	$xpBar = $('.xpText')
 	$game = $('#gameAch')
 	$current = $('#currentQuests')
 	$path = $('#currentPath')
+	$level = $('.levelIndicator')
 	$('.questName').hallo({editable : true})
 	$('.dailyName').hallo({editable : true})
 
-	updateCharBars = (char) ->
-		$('#experienceProgressbar').progressbar( {value : char.expPerc})
-		$('#experienceProgressbar').find('.ui-progressbar-value').css( {'background' : '#660066'})
-		$('#healthProgressbar').progressbar( {value : char.hpPerc})
-		$('#healthProgressbar').find('.ui-progressbar-value').css( {'background' : '#F13939'})
+
+	dashUpdater = (() ->
+
+		updateCharBars = (char) ->
+			$('#experienceProgressbar').progressbar( {value : char.expPerc})
+			$('#experienceProgressbar').find('.ui-progressbar-value').css( {'background' : '#0972a5'})
+			$('#healthProgressbar').progressbar( {value : char.hpPerc})
+			$('#healthProgressbar').find('.ui-progressbar-value').css( {'background' : '#F13939'})
 
 
-	updateDashboard = (char) ->
-		$dash.html handleDash char
-		$charStats.html handleChar char
-		$path.html handlePath char
-		updateCharBars(char)
+		updateDashboard = (char) ->
+			$dash.html handleDash char
+			$hpBar.html handlehp char
+			$xpBar.html handlexp char
+			$level.html handleLevel char
+			$path.html handlePath char
+			updateCharBars(char)
+			window.currentUser = char
 
-	checkOffQuest = (type, el) ->
-		questDone = $(el).parent()
-		questName = $(el).next().text()
-		if type is 'quest'
-			expGain = Math.floor(Math.random()*25 + 1)
-		else
-			expGain = Math.floor(Math.random()*60 + 1)
-		console.log questName
-		questDone.fadeOut('fast', () ->
-			socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain }) #this will remove the task from the database and give the user XP
+		checkOffQuest = (type, el) ->
+			questDone = $(el).parent()
+			questName = $(el).next().text()
+			if type is 'quest'
+				expGain = Math.floor(Math.random()*25 + 1)
+			else
+				expGain = Math.floor(Math.random()*60 + 1)
+			console.log questName
+			questDone.fadeOut('fast', () ->
+				socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain }) #this will remove the task from the database and give the user XP
+
+		questTimerUpdate = () ->
+			$('.quest').each () ->
+				currTime = moment().format('X')
+				issueTime = $(@).find('.questTimer').attr('data-time')
+				wait = currTime - issueTime
+				waitConv = moment(issueTime*1000).fromNow()
+				$(@).find('.questTimer').text(waitConv)
+
+		dailyTimer = (user) ->
+			$('.daily').each () ->
+				currTime = moment().format('X')
+				issueTime = $(@).attr('data-time')
+				wait = currTime - issueTime
+				if wait > 10
+					$(@).attr('data-time', moment().format('X'))
+					hp = user.currentHealth - 10
+					socket.emit 'damage', { user : user, HP : hp }
+
+	
+		updateCharBars : updateCharBars,
+		updateDashboard : updateDashboard,
+		checkOffQuest : checkOffQuest,
+		questTimerUpdate : questTimerUpdate,
+		dailyTimer : dailyTimer
+		
+		
+		)()
+
 	
 	setInterval () ->
-		questTimerUpdate()
+		dashUpdater.questTimerUpdate
 	, 1000
-
-	questTimerUpdate = () ->
-		$('.quest').each () ->
-			currTime = moment().format('X')
-			# console.log 'c',currTime
-			issueTime = $(@).find('.questTimer').attr('data-time')
-			# console.log 'i',issueTime
-			wait = currTime - issueTime
-			# console.log 'w', wait
-			waitConv = moment(issueTime*1000).fromNow()
-			# console.log 'wc', waitConv
-			$(@).find('.questTimer').text(waitConv)
-
-	dailyTimer = (user) ->
-		$('.daily').each () ->
-			currTime = moment().format('X')
-			console.log 'CURR', currTime
-			issueTime = $(@).attr('data-time')
-			console.log 'issueTime', issueTime
-			wait = currTime - issueTime
-			console.log 'WAIT', wait
-			if wait > 30
-				$(@).attr('data-time', moment().format('X'))
-				hp = user.currentHealth - 20
-				socket.emit 'damage', { user : user, HP : hp}
-				
-
 
 	$.get '/charData', {}, (userCharacter) ->
 		console.log userCharacter
-		updateDashboard(userCharacter)
+		dashUpdater.updateDashboard(userCharacter)
 		$('.questName').hallo({editable : true})
 		$('.dailyName').hallo({editable : true})
-		dailyTimer(userCharacter)
+		dashUpdater.dailyTimer(userCharacter)
 		window.currentUser = userCharacter # makes available for sockets
 		
 
@@ -96,7 +110,7 @@ $ ->
 	$(document).on 'click', '.choosePath', () ->
 		$('#pathChooser').fadeOut()
 		$.get '/charData', {}, (userCharacter) ->
-			updateDashboard(userCharacter)
+			dashUpdater.updateDashboard(userCharacter)
 			
 
 	$(document).on 'click', '.addQuest', () ->
@@ -129,14 +143,12 @@ $ ->
 		daily = $(@).text()
 		$.post '/updateDaily', {dailyName : daily}, () ->
 		
-	
-
 	# Completing quests
 	$(document).on 'click', '.questStatus', () ->
-		checkOffQuest('Quest', @)
+		dashUpdater.checkOffQuest('Quest', @)
 
 	$(document).on 'click', '.dailyStatus', () ->
-		checkOffQuest('Daily', @)
+		dashUpdater.checkOffQuest('Daily', @)
 
 	$(document).on 'mouseenter', '.quest, .daily', () ->
 		# $(@).addClass('animated pulse')
@@ -146,14 +158,16 @@ $ ->
 
 	$(document).on 'click', '.dailyDelete', () ->
 		daily = $(@).prev().text()
+		$(@).parent().fadeOut()
 		$.post '/removeDaily', {dailyName : daily}, () ->
-			console.log currentUser
-			updateDashboard currentUser
-
+		
 	$(document).on 'click', '.questDelete', () ->
 		quest = $(@).prev().text()
+		$(@).parent().fadeOut()
 		$.post '/removeQuest', {questName : quest}, () ->
-			updateDashboard currentUser
+
+	$(document).on 'click', '.closeButton', () ->
+		$('#death').addClass('animated rollOut')
 
 	socket.on 'updateChar', (character) ->
 		if character.level > currentUser.level
@@ -161,17 +175,19 @@ $ ->
 				$('#levelUp').addClass('animated flipOutX'))
 			$('#experienceProgressbar').progressbar( {value : 0})
 		console.log character
-		updateDashboard(character)
-		window.currentUser = character
-		$('#experienceProgressbar').progressbar( {value : character.expPerc})
-		$('#experienceProgressbar').find('.ui-progressbar-value').css( {'background' : '#660066'})
-		$('#healthProgressbar').progressbar( {value : character.hpPerc})
-		$('#healthProgressbar').find('.ui-progressbar-value').css( {'background' : '#F13939'})
+		dashUpdater.updateDashboard(character)
+		
 
 	socket.on 'damageTaken', (character) ->
+		dashUpdater.updateDashboard(character)
 		if character.currentHealth <= 0
+			console.log 'dmg', character
 			socket.emit 'death', character
 
+	socket.on 'dead', (character) ->
+		$('#death').removeClass('animated rollOut').fadeIn()
+		dashUpdater.updateDashboard(character)
+		
 
 	return
 

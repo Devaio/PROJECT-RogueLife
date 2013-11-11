@@ -88,35 +88,18 @@
 	{{/if}}
 
 </script>
-<script id='char-stats' type='text/x-handlebars-template'>
 
-		<div class='col-sm-1 col-xs-5 charAvatar'>
-		<img(src='{{avatar}}')></img>
-		</div>
+<script id='hp-stats' type='text/x-handlebars-template'>
+	<div class='charSpan progress-label'> {{currentHealth}} / {{health}}  HP </div>
+</script>
 
+<script id='xp-stats' type='text/x-handlebars-template'>
+	<div class='charSpan progress-label'>{{experience}} / {{maxExperience}}  XP </div>
+</script>
 
-		<div class='col-sm-1 col-xs-5 levelIndicator'>
-			<p> Level </p>
-			<p class='currentLevel'> {{level}}</p>
-		</div>
-
-
-		<div class="col-sm-7 col-xs-12 col-sm-offset-1">
-			
-			<div id='healthProgressbar' class="healthBar ui-progressbar" role='progressbar'> 
-		<div class='charSpan progress-label'> {{currentHealth}} / {{health}} HP </div>
-		</div></div>
-
-			<br>
-			<br>
-
-		<div class="col-sm-7 col-xs-12 col-sm-offset-1"> 
-			
-			<div id='experienceProgressbar' class="expBar ui-progressbar" role='progressbar'> 
-		<div class='charSpan progress-label'>{{experience}} / {{maxExperience}} XP </div>
-		</div></div>
-
-
+<script id='char-level' type='text/x-handlebars-template'>
+	<p> Level </p>
+	<p class='currentLevel'> {{level}}</p>
 </script>
 
 <script id='path-chosen' type='text/x-handlebars-template'>

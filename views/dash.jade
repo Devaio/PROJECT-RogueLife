@@ -4,7 +4,28 @@ block dash
 
 	#levelUp
 		h2.levelUpText Level Up!
+	#death
+		.deathTextArea.container
+			h2.deathText You Have Died...
+			p.deathExplanation Daily tasks are important for more than leveling up, they keep you alive!
+				p Make sure you keep up with your dailies to survive!
+			.closeButton
+				a Close
 	#charStats.row-fluid.container
+		.col-sm-1.col-xs-5.charAvatar
+		.col-sm-1.col-xs-5.levelIndicator
+			p Level 
+			p.currentLevel #{userCharacter.level}
+		.col-sm-7.col-xs-12.col-sm-offset-1.bar
+			#healthProgressbar.healthBar.ui-progressbar(role='progressbar')
+			.hpText
+				.charSpan.progress-label #{userCharacter.currentHealth} / #{userCharacter.health}  HP 
+		br
+		br
+		.col-sm-7.col-xs-12.col-sm-offset-1.bar
+			#experienceProgressbar.expBar.ui-progressbar(role='progressbar')
+			.xpText
+				.charSpan.progress-label #{userCharacter.experience} / #{userCharacter.maxExperience}  XP 
 
 	.row-fluid.container
 		h3.col-xs-5.offset-2 The story so far...

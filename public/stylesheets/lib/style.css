@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'megapixelregular';
+  src: url("/stylesheets/fonts/megapix/megapix-webfont.eot");
+  src: url("/stylesheets/fonts/megapix/megapix-webfont.eot?#iefix") format('embedded-opentype'), url("/stylesheets/fonts/megapix/megapix-webfont.woff") format('woff'), url("/stylesheets/fonts/megapix/megapix-webfont.ttf") format('truetype'), url("/stylesheets/fonts/megapix/megapix-webfont.svg#megapixelregular") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'dragonslapperregular';
+  src: url("/stylesheets/fonts/dragon/dragonslapper-webfont.eot");
+  src: url("/stylesheets/fonts/dragon/dragonslapper-webfont.eot?#iefix") format('embedded-opentype'), url("/stylesheets/fonts/dragon/dragonslapper-webfont.woff") format('woff'), url("/stylesheets/fonts/dragon/dragonslapper-webfont.ttf") format('truetype'), url("/stylesheets/fonts/dragon/dragonslapper-webfont.svg#dragonslapperelregular") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 body {
   font: 14px "Cambria", Helvetica, Arial, sans-serif;
   padding-bottom: 100px;
@@ -7,6 +21,7 @@ body {
 }
 #footer {
   position: fixed;
+  height: 60px;
   margin-left: 0px;
   margin-right: 0px;
   background-color: #adac90;
@@ -78,12 +93,9 @@ body {
   font-family: megapixelregular;
   font-size: 2em;
 }
-@font-face {
-  font-family: 'megapixelregular';
-  src: url("/stylesheets/fonts/megapix-webfont.eot");
-  src: url("/stylesheets/fonts/megapix-webfont.eot?#iefix") format('embedded-opentype'), url("/stylesheets/fonts/megapix-webfont.woff") format('woff'), url("/stylesheets/fonts/megapix-webfont.ttf") format('truetype'), url("/stylesheets/fonts/megapix-webfont.svg#megapixelregular") format('svg');
-  font-weight: normal;
-  font-style: normal;
+.charSpan {
+  color: #000;
+  text-shadow: 0px 0px 10px #808080;
 }
 .signUpButton {
   position: relative;
@@ -113,18 +125,20 @@ body {
   -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 }
-.ui-progressbar {
+.ui-progressbar-value {
   position: relative;
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -ms-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.8s ease-in-out;
+  -moz-transition: all 0.8s ease-in-out;
+  -ms-transition: all 0.8s ease-in-out;
+  -o-transition: all 0.8s ease-in-out;
+  transition: all 0.8s ease-in-out;
+  box-shadow: 0 0 20px #000;
 }
 .progress-label {
+  z-index: 1100;
   position: absolute;
   top: 4px;
-  right: 0%;
+  right: -1%;
 }
 .choosePath {
   background-color: #f5deb3;
@@ -327,4 +341,52 @@ body {
 }
 .levelUpText {
   text-align: center;
+}
+#death {
+  z-index: 5200;
+  position: absolute;
+  display: none;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+}
+.deathTextArea {
+  background-color: #fff;
+  position: relative;
+  top: 20%;
+  width: 60%;
+  height: auto;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2em;
+}
+.deathText {
+  color: #aa1a1a;
+  font-family: dragonslapperregular;
+  font-size: 5em;
+  padding: 10px 10px 100px 10px;
+}
+.closeButton {
+  float: right;
+  text-align: center;
+  background-color: #2f4f4f;
+  padding: 10px 20px 10px 20px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+  border-radius: 6px;
+  margin: 2px;
+  cursor: pointer;
+}
+.closeButton:hover {
+  background-color: rgba(47,79,79,0.8);
+}
+.closeButton a {
+  color: #fff;
+}
+@media only screen and (min-width : 320px) and (max-width : 768px) {
+  .bar {
+    clear: both;
+  }
 }
