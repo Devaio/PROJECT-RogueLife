@@ -93,8 +93,7 @@
           issueTime = $(this).find('.questTimer').attr('data-time');
           wait = currTime - issueTime;
           waitConv = moment(issueTime * 1000).fromNow();
-          timeText = $(this).find('.questTimer').text(waitConv);
-          return console.log(timeText);
+          return timeText = $(this).find('.questTimer').text(waitConv);
         });
       };
       dailyTimer = function(user) {
@@ -104,7 +103,7 @@
           currTime = moment().format('X');
           issueTime = $(this).attr('data-time');
           wait = currTime - issueTime;
-          if (wait > 10) {
+          if (wait > 1) {
             window.timer = true;
             return $(this).attr('data-time', moment().format('X'));
           }

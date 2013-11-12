@@ -29,17 +29,22 @@ block login
 				.modal-body
 					form.signUp
 						.form-group
-							label.col-2.control-label(for='inputEmail2') Email
+							label.col-2.control-label(for='inputEmail2') Email*
 							.col-4
 								input#inputEmail2.form-control(type='email', name='email', placeholder='Email', required)
 						.form-group
-							label.col-2.control-label(for='inputUserName2') Username
+							label.col-2.control-label(for='inputphone2') Phone
+							.col-4
+								input#inputPhone2.form-control(type='text', name='phone', placeholder='Phone Number')
+						.form-group
+							label.col-2.control-label(for='inputUserName2') Username*
 							.col-4
 								input#inputUserName2.form-control(type='text', name='username', placeholder='Username', required)
 						.form-group
-							label.col-2.control-label(for='inputPassword2') Password
+							label.col-2.control-label(for='inputPassword2') Password*
 							.col-4
 								input#inputPassword2.form-control(type='password', name='password', placeholder='Password', required)
+						* Required
 						button.btn.btn-info.pull-right.signUpButton(type='submit') Sign Up
 				.modal-footer
 					a(href='/auth/google')

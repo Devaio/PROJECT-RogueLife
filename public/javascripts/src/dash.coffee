@@ -72,7 +72,7 @@ $ ->
 				wait = currTime - issueTime
 				waitConv = moment(issueTime*1000).fromNow()
 				timeText = $(@).find('.questTimer').text(waitConv)
-				console.log timeText
+				
 
 		dailyTimer = (user) ->
 			$('.daily').each () ->
@@ -80,7 +80,7 @@ $ ->
 				currTime = moment().format('X')
 				issueTime = $(@).attr('data-time')
 				wait = currTime - issueTime
-				if wait > 10
+				if wait > 1
 					window.timer = true
 					$(@).attr('data-time', moment().format('X'))
 			if timer

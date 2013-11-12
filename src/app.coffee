@@ -114,6 +114,7 @@ Character = mongoose.model 'Character', {
 	openId : {type : String},
 	email : {type: String, required : true, unique : true},
 	password : {type : String},
+	phone : {type : String},
 	health : {type : Number, default : 100},
 	currentHealth : {type : Number, default : 100},
 	hpPerc : {type : Number, default : 100},
@@ -174,13 +175,15 @@ app.get '/login', (req, res) ->
 
 app.post '/signup', (req, res) ->
 	Character.findOne {username : req.body.username}, (err, user) ->
+		console.log 'PHONE STUFS', req.body.phone.replace /[^\w\s]/gi, ''
 		if user
 			res.send 'Already a user!'
 		else
 			newUser = new Character {
 				email : req.body.email,
 				password : req.body.password,
-				username : req.body.username
+				username : req.body.username,
+				phone : '+1'+req.body.phone.replace /[^\w\s]/gi, ''
 			}
 			newUser.save()
 			console.log 'UserID', newUser._id
