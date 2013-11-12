@@ -125,6 +125,7 @@ Character = mongoose.model 'Character', {
 	currentQuests : {type: Array, default : []},
 	completedQuests : {type: Array, default : []},
 	dailies : {type: Array, default:[]},
+	randDailies : {type : Array, default : []},
 	path : {type : String},
 	avatar : {type : String}
 }
@@ -197,7 +198,14 @@ app.post '/chosenpath', app.isAuthenticated, (req, res) ->
 	console.log 'user', req.user
 	console.log 'BODY PATH', req.body.path
 	Character.findOneAndUpdate {username : req.user.username}, {path : req.body.path}, (err, char) ->
-		# char = char[0]
+		currentPath = char.path
+		dailyList = pathTasks.Dailies
+		pushDailyName = randomDaily( dailyList, currentPath )
+		pushDaily = {dailyName : pushDailyName, startDaily : moment().format('X')}
+		char['dailies'].push pushDaily
+		char.markModified('dailies')
+		char.save()
+
 		console.log 'CHAR!!!', char
 		if err
 			console.log 'error choosepath', err
@@ -249,6 +257,13 @@ socketUpdateChar = (data, socket) ->
 			charToUpdate = char[0]
 			socket.emit 'updateChar', charToUpdate
 
+randomDaily = (randDaily, path) ->
+	pathList = randDaily[path]
+	listLength = pathList.length
+	randPick = Math.floor((Math.random()*listLength))
+	newDaily = pathList[randPick]	
+
+
 ### SOCKETS ###
 user = {}
 io.sockets.on 'connection', (socket) ->
@@ -264,13 +279,26 @@ io.sockets.on 'connection', (socket) ->
 			char['dailies'].forEach (daily) ->
 				if daily.dailyName is data.questName
 					daily.finished = true
+					daily.startDaily = moment().format('X')
 					char.markModified('dailies')
 					char.save()
 					socketUpdateChar(data, socket)
 
 	socket.on 'damage', (data) ->
+
+		randomDaily = (randDaily, path) ->
+			pathList = randDaily[path]
+			listLength = pathList.length
+			randPick = Math.floor((Math.random()*listLength))
+			newDaily = pathList[randPick]	
+
 		Character.findOneAndUpdate {username : data.user.username}, {$inc : {currentHealth : -10}}, (err, char) ->
 		Character.findOne {username : data.user.username}, {}, (err, char) ->
+			currentPath = char.path
+			dailyList = pathTasks.Dailies
+			pushDailyName = randomDaily( dailyList, currentPath )
+			pushDaily = {dailyName : pushDailyName, startDaily : moment().format('X')}
+			char['dailies'].push pushDaily
 			char['dailies'].forEach (daily) -> #loops through dailies array and sets timer
 				console.log daily
 				daily.startDaily = moment().format('X')

@@ -103,7 +103,7 @@
           currTime = moment().format('X');
           issueTime = $(this).attr('data-time');
           wait = currTime - issueTime;
-          if (wait > 1) {
+          if (wait > 86400) {
             window.timer = true;
             return $(this).attr('data-time', moment().format('X'));
           }
