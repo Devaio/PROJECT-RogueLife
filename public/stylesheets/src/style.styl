@@ -54,14 +54,22 @@ backgroundImage(link)
 
 
 // Styling
+.loginImage
+	backgroundImage('/images/animatedlake.gif')
+.dashImage
+	backgroundImage('/images/animatedlake.gif')
+.splashImage
+	backgroundImage('/images/animatedforest.gif')
 body
 	font 14px "Cambria", Helvetica, Arial, sans-serif
 	padding-bottom 100px
 .navbar
 	padding 5px 5px 0px 0px
+.navbar-brand
+	font-family megapixelregular
+	font-size 2em
 #footer
 	position fixed
-	height 60px
 	margin-left 0px
 	margin-right 0px
 	background-color #B28871
@@ -86,13 +94,18 @@ body
 	position relative
 	width auto
 	height auto
-	background-color #90ADAC
+	background-color rgba(255, 255, 255, 0.3)
 	border thin solid gainsboro
 	border-radius 2px
 .signUp a
 	color #333
 #inputEmail1, #inputPassword1, #inputUserName1
 	height 50px
+#error
+	display none
+	position relative
+	bottom 30px
+	color red
 .dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a
 	background-color rgba(50,50,50,.5)
 	transition all 0.2s ease-in-out
@@ -102,20 +115,42 @@ body
 	color white
 .mainDescription
 	color white
-.navbar-brand
-	font-family megapixelregular
-	font-size 2em
+.dare
+	font-size 2.5em
+	color gainsboro
+	padding-left 5%
+
+
+
 .charSpan
 	color black
 	text-shadow 0px 0px 10px grey
+#charStats
+	background-color rgba(255, 255, 255, 0.7)
+	padding-top 20px
+	border-radius 5px
+	box-shadow 0px 0px 10px black
+	border outset
 .signUpButton
 	position relative
 	top 55px
 #completedQuests, #currentQuests, #gameQuests, #dailyQuests
-	border thick gray inset
+	border thick gray groove
 	margin-right 4%
 	margin-left 1%
-	background-color #EEFFFE
+	background-color rgba(230, 255, 230, 0.7)
+	font-weight bold
+	text-shadow 0px 0px 3px white
+	box-shadow 0px 0px 10px black
+.finished
+	text-decoration line-through
+.charName
+	font-family dragonslapperregular
+	font-size 3em
+.tabHeader
+	background-color rgba(0, 0, 0, 0.7)
+.tabHeader > a
+	color grey
 .tabList
 	display inline-block
 	margin-bottom -5px
@@ -125,7 +160,6 @@ body
 	height 30px
 	font-family serif
 	transition all 0.5s ease-in-out
-
 .ui-progressbar-value
 	position relative
 	transition all 0.8s ease-in-out
@@ -155,19 +189,14 @@ body
 	text-align center
 	font-family megapixelregular
 	font-size 2.5em
-#error
-	display none
-	position relative
-	bottom 30px
-	color red
+
 .addQuest, .addDaily
 	position absolute
 	right 5px
 	top 5px
 	height auto
 	width auto
-.splashImage
-	backgroundImage('/images/animatedforest.gif')
+
 .quest, .daily, .completedQuest
 	display block
 	padding 5px
@@ -186,10 +215,7 @@ body
 	display inline-block
 	position relative
 	right 0px
-.loginImage
-	backgroundImage('/images/animatedlake.gif')
-.dashImage
-	backgroundImage('/images/dashbg.png')
+
 .bar
 	padding 0px
 	margin-right 3%
@@ -205,6 +231,7 @@ body
 .levelIndicator p
 	margin-top 1px
 	margin-bottom 1px
+	font-family dragonslapperregular
 .currentLevel
 	font-family serif
 	font-size 3em
@@ -242,6 +269,7 @@ body
 	transition all 2s ease-in-out
 .levelUpText
 	text-align center
+	font-family dragonslapperregular
 #death
 	z-index 5200
 	position absolute
@@ -275,13 +303,13 @@ body
 	background-color rgba(47,79,79, 0.8)
 .closeButton a
 	color white
-.finished
-	text-decoration line-through
 
 @media only screen and (min-width : 320px) and (max-width : 768px)
 
 	.bar
 		clear both
+	.charName
+		font-size 2em
 
 
 

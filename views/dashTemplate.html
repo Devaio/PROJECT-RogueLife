@@ -3,8 +3,8 @@
 		<div class="row-fluid">
 			<div class='col-md-4 col-md-offset-6'>
 			<ul class="nav nav-tabs tabList">
-			  <li class="active"><a data-toggle='tab' href="#currentQuests">Current Quests</a></li>
-			  <li><a data-toggle='tab' href="#completedQuests">Completed Quests</a></li>
+			  <li class="active tabHeader"><a data-toggle='tab' href="#currentQuests">Current Quests</a></li>
+			  <li class="tabHeader"><a data-toggle='tab' href="#completedQuests">Completed Quests</a></li>
 			</ul>
 			</div>
 		</div>
@@ -57,7 +57,7 @@
 					<div class="questStatus"></div>
 					<span class='questName'>{{this.questName}}</span>
 					<div class="questDelete pull-right">&times</div>
-					<div class='questTimer pull-right text-muted' data-time={{this.startQuest}}></div>
+					<div class='questTimer pull-right text-info' data-time={{this.startQuest}}></div>
 
 				</li>
 			{{/each}}
@@ -110,6 +110,6 @@
 </script>
 
 <script id='path-chosen' type='text/x-handlebars-template'>
-	<h4 class='col-sm-5 pull-right'> Your path : {{path}} </h4>
+	<h4 class='col-sm-5'> Your path : {{path}} </h4>
 </script>
 

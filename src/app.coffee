@@ -125,7 +125,6 @@ Character = mongoose.model 'Character', {
 	currentQuests : {type: Array, default : []},
 	completedQuests : {type: Array, default : []},
 	dailies : {type: Array, default:[]},
-	randDailies : {type : Array, default : []},
 	path : {type : String},
 	avatar : {type : String}
 }
@@ -150,6 +149,9 @@ app.get '/logout', (req, res) ->
 	req.logOut() 
 	res.redirect '/'
 
+app.get '/about', (req, res) ->
+	res.render 'about', {userCharacter : req.user}
+	
 #LOGIN/SIGNUP ROUTES
 
 app.post '/signin', passport.authenticate('local'), (req, res) ->

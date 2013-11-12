@@ -12,6 +12,54 @@
   font-weight: normal;
   font-style: normal;
 }
+.loginImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  -webkit-background-image: url("/images/animatedlake.gif");
+  -moz-background-image: url("/images/animatedlake.gif");
+  -ms-background-image: url("/images/animatedlake.gif");
+  -o-background-image: url("/images/animatedlake.gif");
+  background-image: url("/images/animatedlake.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+.dashImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  -webkit-background-image: url("/images/animatedlake.gif");
+  -moz-background-image: url("/images/animatedlake.gif");
+  -ms-background-image: url("/images/animatedlake.gif");
+  -o-background-image: url("/images/animatedlake.gif");
+  background-image: url("/images/animatedlake.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+.splashImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  -webkit-background-image: url("/images/animatedforest.gif");
+  -moz-background-image: url("/images/animatedforest.gif");
+  -ms-background-image: url("/images/animatedforest.gif");
+  -o-background-image: url("/images/animatedforest.gif");
+  background-image: url("/images/animatedforest.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
 body {
   font: 14px "Cambria", Helvetica, Arial, sans-serif;
   padding-bottom: 100px;
@@ -19,9 +67,12 @@ body {
 .navbar {
   padding: 5px 5px 0px 0px;
 }
+.navbar-brand {
+  font-family: megapixelregular;
+  font-size: 2em;
+}
 #footer {
   position: fixed;
-  height: 60px;
   margin-left: 0px;
   margin-right: 0px;
   background-color: #b28871;
@@ -55,7 +106,7 @@ body {
   position: relative;
   width: auto;
   height: auto;
-  background-color: #90adac;
+  background-color: rgba(255,255,255,0.3);
   border: thin solid #dcdcdc;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -70,6 +121,12 @@ body {
 #inputPassword1,
 #inputUserName1 {
   height: 50px;
+}
+#error {
+  display: none;
+  position: relative;
+  bottom: 30px;
+  color: #f00;
 }
 .dropdown-menu li > a:hover,
 .dropdown-menu li > a:focus,
@@ -89,13 +146,25 @@ body {
 .mainDescription {
   color: #fff;
 }
-.navbar-brand {
-  font-family: megapixelregular;
-  font-size: 2em;
+.dare {
+  font-size: 2.5em;
+  color: #dcdcdc;
+  padding-left: 5%;
 }
 .charSpan {
   color: #000;
   text-shadow: 0px 0px 10px #808080;
+}
+#charStats {
+  background-color: rgba(255,255,255,0.7);
+  padding-top: 20px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px #000;
+  border: outset;
 }
 .signUpButton {
   position: relative;
@@ -105,10 +174,26 @@ body {
 #currentQuests,
 #gameQuests,
 #dailyQuests {
-  border: thick #808080 inset;
+  border: thick #808080 groove;
   margin-right: 4%;
   margin-left: 1%;
-  background-color: #eefffe;
+  background-color: rgba(230,255,230,0.7);
+  font-weight: bold;
+  text-shadow: 0px 0px 3px #fff;
+  box-shadow: 0px 0px 10px #000;
+}
+.finished {
+  text-decoration: line-through;
+}
+.charName {
+  font-family: dragonslapperregular;
+  font-size: 3em;
+}
+.tabHeader {
+  background-color: rgba(0,0,0,0.7);
+}
+.tabHeader > a {
+  color: #808080;
 }
 .tabList {
   display: inline-block;
@@ -177,12 +262,6 @@ body {
   font-family: megapixelregular;
   font-size: 2.5em;
 }
-#error {
-  display: none;
-  position: relative;
-  bottom: 30px;
-  color: #f00;
-}
 .addQuest,
 .addDaily {
   position: absolute;
@@ -190,22 +269,6 @@ body {
   top: 5px;
   height: auto;
   width: auto;
-}
-.splashImage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  -webkit-background-image: url("/images/animatedforest.gif");
-  -moz-background-image: url("/images/animatedforest.gif");
-  -ms-background-image: url("/images/animatedforest.gif");
-  -o-background-image: url("/images/animatedforest.gif");
-  background-image: url("/images/animatedforest.gif");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 100%;
-  height: 100%;
 }
 .quest,
 .daily,
@@ -234,38 +297,6 @@ body {
   position: relative;
   right: 0px;
 }
-.loginImage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  -webkit-background-image: url("/images/animatedlake.gif");
-  -moz-background-image: url("/images/animatedlake.gif");
-  -ms-background-image: url("/images/animatedlake.gif");
-  -o-background-image: url("/images/animatedlake.gif");
-  background-image: url("/images/animatedlake.gif");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 100%;
-  height: 100%;
-}
-.dashImage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  -webkit-background-image: url("/images/dashbg.png");
-  -moz-background-image: url("/images/dashbg.png");
-  -ms-background-image: url("/images/dashbg.png");
-  -o-background-image: url("/images/dashbg.png");
-  background-image: url("/images/dashbg.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 100%;
-  height: 100%;
-}
 .bar {
   padding: 0px;
   margin-right: 3%;
@@ -283,6 +314,7 @@ body {
 .levelIndicator p {
   margin-top: 1px;
   margin-bottom: 1px;
+  font-family: dragonslapperregular;
 }
 .currentLevel {
   font-family: serif;
@@ -344,6 +376,7 @@ body {
 }
 .levelUpText {
   text-align: center;
+  font-family: dragonslapperregular;
 }
 #death {
   z-index: 5200;
@@ -388,11 +421,11 @@ body {
 .closeButton a {
   color: #fff;
 }
-.finished {
-  text-decoration: line-through;
-}
 @media only screen and (min-width : 320px) and (max-width : 768px) {
   .bar {
     clear: both;
+  }
+  .charName {
+    font-size: 2em;
   }
 }

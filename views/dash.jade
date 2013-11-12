@@ -27,12 +27,12 @@ block dash
 			.xpText
 				.charSpan.progress-label #{userCharacter.experience} / #{userCharacter.maxExperience}  XP 
 
-	.row-fluid.container
-		h3.col-xs-5.offset-2 The story so far...
-		#currentPath
+		.row-fluid.container
+			h3.col-xs-5.offset-2.charName #{userCharacter.username[0].toUpperCase()}#{userCharacter.username.slice(1)} the Ambitious
+			#currentPath
 
 	hr
-	//- .dashImage
+	.dashImage
 	#dashBoard
 
 

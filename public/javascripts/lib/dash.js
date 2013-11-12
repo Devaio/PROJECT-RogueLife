@@ -144,7 +144,7 @@
       });
     });
     $(document).on('click', '.addQuest', function() {
-      $('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-muted"></div></li>').addClass('animated bounceInRight'));
+      $('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-info"></div></li>').addClass('animated bounceInRight'));
       return $('.questName').hallo({
         editable: true
       });
@@ -226,7 +226,8 @@
         });
       }
       console.log(character);
-      return dashUpdater.updateDashboard(character);
+      dashUpdater.updateDashboard(character);
+      return $('#levelUp').removeClass('animated flipOutX');
     });
     socket.on('damageTaken', function(character) {
       dashUpdater.updateDashboard(character);

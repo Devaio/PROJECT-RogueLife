@@ -117,7 +117,7 @@ $ ->
 			
 	#adding quests/dailies from button
 	$(document).on 'click', '.addQuest', () ->
-		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-muted"></div></li>').addClass('animated bounceInRight'))
+		$('.currentQuestList').append($('<li class="quest list-unstyled"><div class="questStatus"></div><span class="questName">Enter a new Quest</span><div class="questDelete pull-right">&times</div><div class="questTimer pull-right text-info"></div></li>').addClass('animated bounceInRight'))
 		$('.questName').hallo({editable : true})
 		
 
@@ -179,6 +179,7 @@ $ ->
 			$('#experienceProgressbar').progressbar( {value : 0})
 		console.log character
 		dashUpdater.updateDashboard(character)
+		$('#levelUp').removeClass('animated flipOutX')
 		
 
 	socket.on 'damageTaken', (character) ->
