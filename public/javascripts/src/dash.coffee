@@ -58,9 +58,9 @@ $ ->
 			questDone = $(el).parent()
 			questName = $(el).next().text()
 			if type is 'quest'
-				expGain = Math.floor(Math.random()*25 + 1)
+				expGain = Math.floor(Math.random()*25 + 10)
 			else
-				expGain = Math.floor(Math.random()*60 + 1)
+				expGain = Math.floor(Math.random()*60 + 30)
 			console.log questName
 			questDone.fadeOut('fast', () ->
 				socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain }) #this will remove the task from the database and give the user XP
@@ -80,11 +80,12 @@ $ ->
 				currTime = moment().format('X')
 				issueTime = $(@).attr('data-time')
 				wait = currTime - issueTime
-				if wait > 86400
+				if wait > 1
 					window.timer = true
 					$(@).attr('data-time', moment().format('X'))
 			if timer
 				socket.emit 'damage', { user : user}
+
 
 	
 		updateCharBars : updateCharBars,

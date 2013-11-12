@@ -12,11 +12,19 @@
   font-weight: normal;
   font-style: normal;
 }
+* {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
 .loginImage {
   position: absolute;
   top: 0;
   left: 0;
   z-index: -1;
+  background-color: #65755d;
   -webkit-background-image: url("/images/animatedlake.gif");
   -moz-background-image: url("/images/animatedlake.gif");
   -ms-background-image: url("/images/animatedlake.gif");
@@ -33,6 +41,7 @@
   top: 0;
   left: 0;
   z-index: -1;
+  background-color: #65755d;
   -webkit-background-image: url("/images/animatedlake.gif");
   -moz-background-image: url("/images/animatedlake.gif");
   -ms-background-image: url("/images/animatedlake.gif");
@@ -49,6 +58,7 @@
   top: 0;
   left: 0;
   z-index: -1;
+  background-color: #65755d;
   -webkit-background-image: url("/images/animatedforest.gif");
   -moz-background-image: url("/images/animatedforest.gif");
   -ms-background-image: url("/images/animatedforest.gif");
@@ -124,7 +134,7 @@ body {
 }
 #error {
   display: none;
-  position: relative;
+  left: 30%;
   bottom: 30px;
   color: #f00;
 }
@@ -226,6 +236,9 @@ body {
   top: 4px;
   right: 1%;
 }
+#pathChooser > div {
+  background-color: rgba(255,255,255,0.7);
+}
 .choosePath {
   background-color: #f5deb3;
   -webkit-border-radius: 5px;
@@ -252,8 +265,10 @@ body {
   box-shadow: 0px 15px 40px #000;
   cursor: pointer;
 }
-.choosePathHeader {
+.choosePathHeader h3 {
   text-align: center;
+  font-family: dragonslapperregular;
+  font-size: 3em;
 }
 .pathDesc {
   position: relative;
@@ -420,6 +435,16 @@ body {
 }
 .closeButton a {
   color: #fff;
+}
+.error {
+  position: absolute;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -ms-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+  display: none;
+  color: #f00;
 }
 @media only screen and (min-width : 320px) and (max-width : 768px) {
   .bar {

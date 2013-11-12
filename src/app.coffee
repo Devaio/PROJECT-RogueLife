@@ -151,7 +151,7 @@ app.get '/logout', (req, res) ->
 
 app.get '/about', (req, res) ->
 	res.render 'about', {userCharacter : req.user}
-	
+
 #LOGIN/SIGNUP ROUTES
 
 app.post '/signin', passport.authenticate('local'), (req, res) ->
@@ -180,7 +180,7 @@ app.post '/signup', (req, res) ->
 	Character.findOne {username : req.body.username}, (err, user) ->
 		console.log 'PHONE STUFS', req.body.phone.replace /[^\w\s]/gi, ''
 		if user
-			res.send 'Already a user!'
+			res.send {message : 'Already a user!'}
 		else
 			newUser = new Character {
 				email : req.body.email,
@@ -251,10 +251,12 @@ socketUpdateChar = (data, socket) ->
 		expUp =  char.maxExperience
 		expPerc =  (char.experience/char.maxExperience) * 100
 		hpPerc = (char.currentHealth/char.health)*100
-		if char.experience > expUp
-			Character.findOneAndUpdate {username : data.user.username}, {$inc : {level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0, expPerc : 0}}, (err, char) ->
+		if char.experience > expUp && char.currentHealth<(char.health - 5)
+			Character.findOneAndUpdate {username : data.user.username}, {$inc : {health : 5, currentHealth : 5, level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0, expPerc : 1}}, (err, char) ->
+		else if char.experience > expUp
+			Character.findOneAndUpdate {username : data.user.username}, {$inc : {health : 5, level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0, expPerc : 1}}, (err, char) ->
 		Character.findOneAndUpdate {username : data.user.username}, {$set : {expPerc : expPerc, hpPerc : hpPerc}}, (err, char) ->
-			
+
 		Character.find {username : data.user.username}, (err, char) ->
 			charToUpdate = char[0]
 			socket.emit 'updateChar', charToUpdate
@@ -288,13 +290,7 @@ io.sockets.on 'connection', (socket) ->
 
 	socket.on 'damage', (data) ->
 
-		randomDaily = (randDaily, path) ->
-			pathList = randDaily[path]
-			listLength = pathList.length
-			randPick = Math.floor((Math.random()*listLength))
-			newDaily = pathList[randPick]	
-
-		Character.findOneAndUpdate {username : data.user.username}, {$inc : {currentHealth : -10}}, (err, char) ->
+		Character.findOneAndUpdate {username : data.user.username}, {$inc : {currentHealth : -15}}, (err, char) ->
 		Character.findOne {username : data.user.username}, {}, (err, char) ->
 			currentPath = char.path
 			dailyList = pathTasks.Dailies
@@ -313,7 +309,7 @@ io.sockets.on 'connection', (socket) ->
 	
 	socket.on 'death', (data) ->
 		console.log 'DATADEATH', data
-		Character.findOneAndUpdate {username : data.username}, {$set : {currentHealth : 100, level : 1, experience : 0, maxExperience : 150, hpPerc : 100, expPerc : 0}}, (err, char) ->
+		Character.findOneAndUpdate {username : data.username}, {$set : {currentHealth : 100, health : 100, level : 1, experience : 0, maxExperience : 150, hpPerc : 100, expPerc : 0}}, (err, char) ->
 			console.log 'deadCHAR', char
 			sendgrid.send {
 				to : char.email,

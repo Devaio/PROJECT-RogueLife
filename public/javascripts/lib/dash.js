@@ -73,9 +73,9 @@
         questDone = $(el).parent();
         questName = $(el).next().text();
         if (type === 'quest') {
-          expGain = Math.floor(Math.random() * 25 + 1);
+          expGain = Math.floor(Math.random() * 25 + 10);
         } else {
-          expGain = Math.floor(Math.random() * 60 + 1);
+          expGain = Math.floor(Math.random() * 60 + 30);
         }
         console.log(questName);
         return questDone.fadeOut('fast', function() {
@@ -103,7 +103,7 @@
           currTime = moment().format('X');
           issueTime = $(this).attr('data-time');
           wait = currTime - issueTime;
-          if (wait > 86400) {
+          if (wait > 1) {
             window.timer = true;
             return $(this).attr('data-time', moment().format('X'));
           }

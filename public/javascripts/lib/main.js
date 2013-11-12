@@ -6,14 +6,19 @@
       e.preventDefault();
       serialData = $(this).serialize();
       $.post("/signup", serialData, function(data) {
-        console.log(data);
-        return $.post('/signin', serialData, function(data) {
-          console.log(serialData);
-          console.log(data);
-          return window.location = data.redirect;
-        });
+        if (data.message) {
+          return $('.error').fadeIn('fast', function() {
+            return $('.error').fadeOut('slow');
+          });
+        } else {
+          $.post('/signin', serialData, function(data) {
+            console.log(serialData);
+            console.log(data);
+            return window.location = data.redirect;
+          });
+          return $('#signUpModal').modal('toggle');
+        }
       });
-      $('#signUpModal').modal('toggle');
     });
     $('.signIn').on('submit', function(e) {
       var serialData;
@@ -23,6 +28,10 @@
       return $.post('/signin', serialData, function(data) {
         console.log('insidepost', serialData);
         return window.location = data.redirect;
+      }).fail(function() {
+        return $('#error').fadeIn('slow', function() {
+          return $('#error').fadeOut('slow');
+        });
       });
     });
     $(document).on('click', '.choosePath', function() {
