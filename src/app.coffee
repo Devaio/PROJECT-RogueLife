@@ -88,26 +88,18 @@ passport.use new GoogleStrategy {
 	realm: ip
 	},
 	(identifier, profile, done) ->
-		console.log 'email', profile.emails[0]['value']
-		console.log 'ID: ', identifier
-		console.log 'PROF', profile
-		Character.find {openId: identifier}, (err, user) ->
-			done err, user[0]
-			if user.length is 0
-				newChar = new Character {
-					openId: identifier,
-					username: profile.displayName,
-					email: profile.emails[0]['value']
-				}
-				newChar.save()
+		process.nextTick () ->
+			Character.find {openId: identifier}, (err, user) ->
+				done err, user[0]
+				if user.length is 0
+					newChar = new Character {
+						openId: identifier,
+						username: profile.displayName,
+						email: profile.emails[0]['value']
+					}
+					newChar.save()
+				return
 			return
-		return
-
-
-
-console.log 'DAILIES!!!!!!!!', pathTasks.Dailies
-
-
 
 Character = mongoose.model 'Character', {
 	username : {type : String, required : true, unique : true},
@@ -125,16 +117,32 @@ Character = mongoose.model 'Character', {
 	currentQuests : {type: Array, default : []},
 	completedQuests : {type: Array, default : []},
 	dailies : {type: Array, default:[]},
+	preDaily :{type : Array, default : []},
 	path : {type : String},
 	avatar : {type : String}
 }
+
 
 
 # development only
 if 'development' == app.get('env') 
   app.use express.errorHandler()
 
-
+userNotification = (char) ->
+	sendgrid.send {
+		to : char.email,
+		from : 'admin@roguelife.herokuapp.com',
+		subject : 'Your character has low health!',
+		text : 'Greetings '+ char.username + '!\n Be careful!  Your character is running dangerously low on health.  Complete your daily tasks to avoid death!'
+	}, (err, json) ->
+		console.log 'JSON!!!:',json
+	if char.phone
+		client.sendMessage {
+			to : char.phone
+			from : '+18133585022',
+			body : 'Greetings '+ char.username + '!\n Be careful!  Your character is running dangerously low on health.  Complete your daily tasks to avoid death!'
+		}, (err, resData) ->
+			console.log resData
 
 #BASIC ROUTES
 app.get '/', (req, res) ->
@@ -152,6 +160,16 @@ app.get '/logout', (req, res) ->
 app.get '/about', (req, res) ->
 	res.render 'about', {userCharacter : req.user}
 
+app.get '/topcharacters', (req, res) ->
+	Character.find {}, (err, topChar) ->
+		topChar.sort (a, b) ->
+			return b.level - a.level
+		global.leaderChars = topChar
+			
+			
+
+	res.render 'topcharacters', {topChar : leaderChars}
+
 #LOGIN/SIGNUP ROUTES
 
 app.post '/signin', passport.authenticate('local'), (req, res) ->
@@ -161,6 +179,8 @@ app.post '/signin', passport.authenticate('local'), (req, res) ->
 app.get '/charData', app.isAuthenticated, (req, res) ->
 	res.send req.user
 
+app.get '/users', app.isAuthenticated, (req, res) -> #redirects Google signins to user page
+	res.redirect '/users/'+req.user._id
 
 app.get '/users/:id', app.isAuthenticated, (req, res) ->
 	Character.find {username : req.user.username}, (err, data) ->
@@ -240,7 +260,7 @@ app.get '/auth/google', passport.authenticate 'google'
 
 app.get '/auth/google/return', passport.authenticate 'google', {
 	session: true,
-	successRedirect: '/',
+	successRedirect: '/users/',
 	failureRedirect: '/login'}
 
 	
@@ -252,7 +272,7 @@ socketUpdateChar = (data, socket) ->
 		expPerc =  (char.experience/char.maxExperience) * 100
 		hpPerc = (char.currentHealth/char.health)*100
 		if char.experience > expUp && char.currentHealth<(char.health - 5)
-			Character.findOneAndUpdate {username : data.user.username}, {$inc : {health : 5, currentHealth : 5, level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0, expPerc : 1}}, (err, char) ->
+			Character.findOneAndUpdate {username : data.user.username}, {$inc : {health : 5, currentHealth : 5, level : 1, maxExperience : Math.floor((levelUp * expUp)*.5)}, $set : {experience : 0, expPerc : 1}}, (err, char) ->
 		else if char.experience > expUp
 			Character.findOneAndUpdate {username : data.user.username}, {$inc : {health : 5, level : 1, maxExperience : (levelUp * expUp)*.5}, $set : {experience : 0, expPerc : 1}}, (err, char) ->
 		Character.findOneAndUpdate {username : data.user.username}, {$set : {expPerc : expPerc, hpPerc : hpPerc}}, (err, char) ->
@@ -265,7 +285,8 @@ randomDaily = (randDaily, path) ->
 	pathList = randDaily[path]
 	listLength = pathList.length
 	randPick = Math.floor((Math.random()*listLength))
-	newDaily = pathList[randPick]	
+	newDaily = pathList[randPick]
+	return newDaily	
 
 
 ### SOCKETS ###
@@ -284,48 +305,43 @@ io.sockets.on 'connection', (socket) ->
 				if daily.dailyName is data.questName
 					daily.finished = true
 					daily.startDaily = moment().format('X')
-					char.markModified('dailies')
+					char.markModified 'dailies'
 					char.save()
 					socketUpdateChar(data, socket)
-
+	socket.on 'finishpreDaily', (data) ->
+		Character.findOne {username : data.user.username}, {}, (err, char) ->
+			char['preDaily'].forEach (daily) ->
+				if daily.preDailyName is data.questName
+					daily.finished = true
+					daily.startPreDaily = moment().format('X')
+					char.markModified 'preDaily'
+					char.save()
+					socketUpdateChar(data, socket)
 	socket.on 'damage', (data) ->
-
 		Character.findOneAndUpdate {username : data.user.username}, {$inc : {currentHealth : -15}}, (err, char) ->
 		Character.findOne {username : data.user.username}, {}, (err, char) ->
-			currentPath = char.path
-			dailyList = pathTasks.Dailies
-			pushDailyName = randomDaily( dailyList, currentPath )
-			pushDaily = {dailyName : pushDailyName, startDaily : moment().format('X')}
-			char['dailies'].push pushDaily
 			char['dailies'].forEach (daily) -> #loops through dailies array and sets timer
-				console.log daily
 				daily.startDaily = moment().format('X')
 				daily.finished = false
+			char['preDaily'].forEach (daily) ->
+				daily.startPreDaily = moment().format('X')
+				daily.finished = false
 			char['hpPerc'] = (char.currentHealth / char.health) * 100
-			char.markModified('dailies')
-			char.markModified('hpPerc')
+			if char.hpPerc <= 50
+				userNotification(char)
+			char.markModified 'preDaily'
+			char.markModified 'dailies'
+			char.markModified 'hpPerc'
 			char.save()
 			socket.emit 'damageTaken', char
-	
+	socket.on 'daily', (data) ->
+		pushDaily = randomDaily(pathTasks.Dailies, data.user.path)
+		Character.findOneAndUpdate {username : data.user.username}, {$set : {preDaily : [{preDailyName : pushDaily, preDailyStart : moment().format('X'), finished : false}]}}, (err, char) ->
+
 	socket.on 'death', (data) ->
 		console.log 'DATADEATH', data
 		Character.findOneAndUpdate {username : data.username}, {$set : {currentHealth : 100, health : 100, level : 1, experience : 0, maxExperience : 150, hpPerc : 100, expPerc : 0}}, (err, char) ->
 			console.log 'deadCHAR', char
-			sendgrid.send {
-				to : char.email,
-				from : 'admin@roguelife.herokuapp.com',
-				subject : 'Your character has died!',
-				text : 'Greetings '+ char.username + '!\n It seems that your lack of committment has gotten your character killed!'
-			}, (err, json) ->
-				console.log 'JSON!!!:',json
-			if char.phone
-				client.sendMessage {
-					to : char.phone
-					from : '+18133585022',
-					body : 'Greetings '+ char.username + '!\n It seems that your lack of committment has gotten your character killed!'
-				}, (err, resData) ->
-					console.log resData
-
-
+			userNotification(char)
 			socket.emit 'dead', char
 

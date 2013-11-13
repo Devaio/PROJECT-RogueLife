@@ -154,6 +154,7 @@ body {
   font-family: megapixelregular;
   font-size: 8em;
   color: #fff;
+  text-shadow: 0px 0px 100px #fff;
 }
 .mainDescription {
   color: #fff;
@@ -289,7 +290,8 @@ body {
 }
 .quest,
 .daily,
-.completedQuest {
+.completedQuest,
+.preDaily {
   display: block;
   padding: 5px;
   overflow: hidden;
@@ -299,15 +301,20 @@ body {
 }
 .quest:hover,
 .daily:hover,
-.completedQuest:hover {
+.completedQuest:hover,
+.preDaily:hover {
   background-color: rgba(150,150,150,0.2);
 }
 .questStatus,
-.dailyStatus {
+.dailyStatus,
+.preDailyStatus {
   display: inline-block;
   width: 10px;
   height: 10px;
   background-color: #228b22;
+}
+.preDailyStatus {
+  background-color: #0ff;
 }
 .questTimer {
   display: inline-block;
@@ -343,8 +350,12 @@ body {
   margin-right: 20px;
   height: 10px;
 }
+.preDailyName {
+  text-shadow: 0 0 5px #0ff;
+}
 .questDelete,
-.dailyDelete {
+.dailyDelete,
+.preDailyDelete {
   margin-right: -3px;
   color: #fff;
   margin-left: 5px;
@@ -366,7 +377,8 @@ body {
   transition: all 0.2s ease-in-out;
 }
 .questDelete:hover,
-.dailyDelete:hover {
+.dailyDelete:hover,
+.preDailyDelete:hover {
   cursor: pointer;
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
@@ -395,7 +407,8 @@ body {
   text-align: center;
   font-family: dragonslapperregular;
 }
-#death {
+#death,
+#dailyComplete {
   z-index: 5200;
   position: absolute;
   display: none;
@@ -403,7 +416,8 @@ body {
   height: 100%;
   background-color: rgba(0,0,0,0.7);
 }
-.deathTextArea {
+.deathTextArea,
+.dailyCompleteArea {
   background-color: #fff;
   position: relative;
   top: 20%;
@@ -413,7 +427,8 @@ body {
   text-align: center;
   font-size: 1.2em;
 }
-.deathText {
+.deathText,
+.dailyCompleteText {
   color: #aa1a1a;
   font-family: dragonslapperregular;
   font-size: 5em;
@@ -448,11 +463,49 @@ body {
   display: none;
   color: #f00;
 }
+.leaderBoard {
+  color: #fff;
+  background-color: rgba(255,255,255,0.6);
+  border: thick #808080 groove;
+  box-shadow: 0px 0px 10px #fff;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+}
+.leaderBoard h2 {
+  font-family: megapixelregular;
+  font-size: 4em;
+  text-decoration: underline;
+  text-align: center;
+}
+.leaderBoardList {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 15px;
+}
+.topCharacter,
+.topLevel {
+  color: #2f4f4f;
+  text-shadow: 0px 0px 5px #f00;
+  font-family: dragonslapperregular;
+  font-size: 2em;
+  display: inline;
+}
+.leader {
+  padding: 10px;
+  border-bottom: thin solid #000;
+}
 @media only screen and (min-width : 320px) and (max-width : 768px) {
   .bar {
     clear: both;
   }
   .charName {
     font-size: 2em;
+  }
+  .topCharacter,
+  .topLevel {
+    font-size: 1.2em;
   }
 }

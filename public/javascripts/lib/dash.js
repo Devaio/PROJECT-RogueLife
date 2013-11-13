@@ -37,12 +37,6 @@
     $current = $('#currentQuests');
     $path = $('#currentPath');
     $level = $('.levelIndicator');
-    $('.questName').hallo({
-      editable: true
-    });
-    $('.dailyName').hallo({
-      editable: true
-    });
     dashUpdater = (function() {
       var checkOffQuest, dailyTimer, questTimerUpdate, updateCharBars, updateDashboard;
       updateCharBars = function(char) {
@@ -72,12 +66,11 @@
         var expGain, questDone, questName;
         questDone = $(el).parent();
         questName = $(el).next().text();
-        if (type === 'quest') {
+        if (type === 'Quest') {
           expGain = Math.floor(Math.random() * 25 + 10);
         } else {
           expGain = Math.floor(Math.random() * 60 + 30);
         }
-        console.log(questName);
         return questDone.fadeOut('fast', function() {
           return socket.emit('finish' + type, {
             user: currentUser,
@@ -109,7 +102,10 @@
           }
         });
         if (timer) {
-          return socket.emit('damage', {
+          socket.emit('damage', {
+            user: user
+          });
+          return socket.emit('daily', {
             user: user
           });
         }
@@ -122,18 +118,20 @@
         dailyTimer: dailyTimer
       };
     })();
+    setTimeout(function() {
+      $('.questName').hallo({
+        editable: true
+      });
+      return $('.dailyName').hallo({
+        editable: true
+      });
+    }, 1000);
     setInterval(function() {
       return dashUpdater.questTimerUpdate();
     }, 1000);
     $.get('/charData', {}, function(userCharacter) {
       console.log(userCharacter);
       dashUpdater.updateDashboard(userCharacter);
-      $('.questName').hallo({
-        editable: true
-      });
-      $('.dailyName').hallo({
-        editable: true
-      });
       dashUpdater.dailyTimer(userCharacter);
       return window.currentUser = userCharacter;
     });
@@ -195,8 +193,10 @@
     $(document).on('click', '.dailyStatus', function() {
       return dashUpdater.checkOffQuest('Daily', this);
     });
-    $(document).on('mouseenter', '.quest, .daily', function() {});
-    $(document).on('mouseleave', '.quest, .daily', function() {});
+    $(document).on('click', '.preDailyStatus', function() {
+      dashUpdater.checkOffQuest('preDaily', this);
+      return $('#dailyComplete').fadeIn();
+    });
     $(document).on('click', '.dailyDelete', function() {
       var daily;
       daily = $(this).prev().text();
@@ -214,7 +214,8 @@
       }, function() {});
     });
     $(document).on('click', '.closeButton', function() {
-      return $('#death').addClass('animated rollOut');
+      $('#death').addClass('animated fadeOutUp');
+      return $('#dailyComplete').addClass('animated rollOut');
     });
     socket.on('updateChar', function(character) {
       if (character.level > currentUser.level) {

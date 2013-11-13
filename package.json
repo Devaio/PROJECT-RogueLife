@@ -19,6 +19,7 @@
     "moment": "~2.4.0",
     "passport-google": "~0.3.0",
     "sendgrid": "~0.4.4",
-    "twilio": "~1.4.0"
+    "twilio": "~1.4.0",
+    "underscore": "~1.5.2"
   }
 }

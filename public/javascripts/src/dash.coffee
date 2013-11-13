@@ -31,9 +31,7 @@ $ ->
 	$current = $('#currentQuests')
 	$path = $('#currentPath')
 	$level = $('.levelIndicator')
-	$('.questName').hallo({editable : true})
-	$('.dailyName').hallo({editable : true})
-
+	
 
 
 	dashUpdater = (() ->
@@ -57,11 +55,10 @@ $ ->
 		checkOffQuest = (type, el) ->
 			questDone = $(el).parent()
 			questName = $(el).next().text()
-			if type is 'quest'
+			if type is 'Quest'
 				expGain = Math.floor(Math.random()*25 + 10)
 			else
 				expGain = Math.floor(Math.random()*60 + 30)
-			console.log questName
 			questDone.fadeOut('fast', () ->
 				socket.emit 'finish' + type, { user : currentUser, questName : questName, expGain : expGain }) #this will remove the task from the database and give the user XP
 
@@ -80,11 +77,12 @@ $ ->
 				currTime = moment().format('X')
 				issueTime = $(@).attr('data-time')
 				wait = currTime - issueTime
-				if wait > 86400
+				if wait > 1
 					window.timer = true
 					$(@).attr('data-time', moment().format('X'))
 			if timer
 				socket.emit 'damage', { user : user}
+				socket.emit 'daily', {user : user}
 
 
 	
@@ -96,7 +94,10 @@ $ ->
 		
 		
 		)()
-	
+	setTimeout () ->
+		$('.questName').hallo({editable : true})
+		$('.dailyName').hallo({editable : true})
+	, 1000
 	setInterval () ->
 		dashUpdater.questTimerUpdate()
 	, 1000
@@ -104,10 +105,10 @@ $ ->
 	$.get '/charData', {}, (userCharacter) ->
 		console.log userCharacter
 		dashUpdater.updateDashboard(userCharacter)
-		$('.questName').hallo({editable : true})
-		$('.dailyName').hallo({editable : true})
 		dashUpdater.dailyTimer(userCharacter)
 		window.currentUser = userCharacter # makes available for sockets
+
+
 		
 
 
@@ -154,11 +155,9 @@ $ ->
 	$(document).on 'click', '.dailyStatus', () ->
 		dashUpdater.checkOffQuest('Daily', @)
 
-	$(document).on 'mouseenter', '.quest, .daily', () ->
-		# $(@).addClass('animated pulse')
-
-	$(document).on 'mouseleave', '.quest, .daily', () ->
-		# $(@).removeClass('animated pulse')
+	$(document).on 'click', '.preDailyStatus', () ->
+		dashUpdater.checkOffQuest('preDaily', @)
+		$('#dailyComplete').fadeIn()
 
 	$(document).on 'click', '.dailyDelete', () ->
 		daily = $(@).prev().text()
@@ -171,7 +170,8 @@ $ ->
 		$.post '/removeQuest', {questName : quest}, () ->
 
 	$(document).on 'click', '.closeButton', () ->
-		$('#death').addClass('animated rollOut')
+		$('#death').addClass('animated fadeOutUp')
+		$('#dailyComplete').addClass('animated rollOut')
 
 	socket.on 'updateChar', (character) ->
 		if character.level > currentUser.level

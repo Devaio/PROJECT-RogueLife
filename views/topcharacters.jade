@@ -1,0 +1,23 @@
+extends common/header
+
+block content
+	.row-fluid.container
+		h1.mainLogo.col-xs-10.offset-2 RogueLife
+	
+	.row-fluid.container
+		.leaderBoard.col-xs-12.col-sm-8.col-sm-offset-2
+			h2 Top Characters
+			ul.leaderBoardList
+				//- -each char in topChar
+				- for (var i = 0; i<10; i++)
+					if topChar[i]
+						li.leader
+							span.topCharacter #{topChar[i].username}
+							span.topLevel.pull-right #{topChar[i].level}
+
+			
+
+	.splashImage
+
+
+	include common/footer

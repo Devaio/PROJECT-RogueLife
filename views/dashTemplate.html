@@ -16,20 +16,33 @@
 		    </div>
 		    <ul class="activityList dailyQuestList list-unstyled"></ul>
 
-		    {{#each dailies}}
+		    {{#each preDaily}}
 		    	{{#if this.finished}}
-				<li class="daily list-unstyled finished" data-time={{this.startDaily}}>
-				<span class='dailyName'>{{this.dailyName}}</span>
-				<div class="dailyDelete pull-right">&times</div>
-				</li>
+					<li class="preDaily list-unstyled finished" data-time={{this.startPreDaily}}>
+					<span class='preDailyName'>{{this.preDailyName}}</span>
+					</li>
 				{{else}}
-				<li class="daily list-unstyled" data-time={{this.startDaily}}>
-				<div class="dailyStatus"></div>
-				<span class='dailyName'>{{this.dailyName}}</span>
-				<div class="dailyDelete pull-right">&times</div>
-				</li>
+					<li class="preDaily list-unstyled" data-time={{this.startPreDaily}}>
+					<div class="preDailyStatus"></div>
+					<span class='preDailyName'>{{this.preDailyName}}</span>
+					</li>
 				{{/if}}
 			{{/each}}
+		    {{#each dailies}}
+		    	{{#if this.finished}}
+					<li class="daily list-unstyled finished" data-time={{this.startDaily}}>
+					<span class='dailyName'>{{this.dailyName}}</span>
+					<div class="dailyDelete pull-right">&times</div>
+					</li>
+				{{else}}
+					<li class="daily list-unstyled" data-time={{this.startDaily}}>
+					<div class="dailyStatus"></div>
+					<span class='dailyName'>{{this.dailyName}}</span>
+					<div class="dailyDelete pull-right">&times</div>
+					</li>
+				{{/if}}
+			{{/each}}
+			
 			  </div>
 
 		<div class='tab-content'>

@@ -118,6 +118,7 @@ body
 	font-family megapixelregular
 	font-size 8em
 	color white
+	text-shadow 0px 0px 100px white
 .mainDescription
 	color white
 .dare
@@ -206,20 +207,22 @@ body
 	height auto
 	width auto
 
-.quest, .daily, .completedQuest
+.quest, .daily, .completedQuest, .preDaily
 	display block
 	padding 5px
 	overflow hidden
 	border-bottom thin solid gainsboro
 	text-overflow ellipsis
 	white-space nowrap
-.quest:hover, .daily:hover, .completedQuest:hover
+.quest:hover, .daily:hover, .completedQuest:hover, .preDaily:hover
 	background-color rgba(150,150,150, .2)
-.questStatus, .dailyStatus
+.questStatus, .dailyStatus, .preDailyStatus
 	display inline-block
 	width 10px
 	height 10px
 	background-color forestgreen
+.preDailyStatus
+	background-color cyan
 .questTimer
 	display inline-block
 	position relative
@@ -249,7 +252,9 @@ body
 	background-color red
 	margin-right 20px
 	height 10px
-.questDelete, .dailyDelete
+.preDailyName
+	text-shadow 0 0 5px cyan
+.questDelete, .dailyDelete, .preDailyDelete
 	margin-right -3px
 	color white
 	margin-left 5px
@@ -261,7 +266,7 @@ body
 	border-radius 5px
 	background-color red
 	transition all 0.2s ease-in-out
-.questDelete:hover, .dailyDelete:hover
+.questDelete:hover, .dailyDelete:hover, .preDailyDelete:hover
 	cursor pointer
 	transition all 0.2s ease-in-out
 	color black
@@ -279,14 +284,14 @@ body
 .levelUpText
 	text-align center
 	font-family dragonslapperregular
-#death
+#death, #dailyComplete
 	z-index 5200
 	position absolute
 	display none
 	width 100%
 	height 100%
 	background-color rgba(0,0,0,.7)
-.deathTextArea
+.deathTextArea, .dailyCompleteArea
 	background-color white
 	position relative
 	top 20%
@@ -295,7 +300,7 @@ body
 	padding 20px
 	text-align center
 	font-size 1.2em
-.deathText
+.deathText, .dailyCompleteText
 	color #AA1A1A
 	font-family dragonslapperregular
 	font-size 5em
@@ -318,12 +323,45 @@ body
 	display none
 	color red
 
+.leaderBoard
+	color white
+	background-color rgba(255, 255, 255, 0.6)
+	border thick gray groove
+	box-shadow 0px 0px 10px white
+	border-radius 5px
+.leaderBoard h2
+	font-family megapixelregular
+	font-size 4em
+	text-decoration underline
+	text-align center
+.leaderBoardList
+	list-style none
+	padding-left 0
+	margin-top 15px
+
+.topCharacter, .topLevel
+	color darkslategrey
+	text-shadow 0px 0px 5px red
+	font-family dragonslapperregular
+	font-size 2em
+	display inline
+
+
+.leader
+	padding 10px
+	border-bottom thin solid black
+
+
 @media only screen and (min-width : 320px) and (max-width : 768px)
 
 	.bar
 		clear both
 	.charName
 		font-size 2em
+
+	.topCharacter, .topLevel
+		font-size 1.2em
+		
 
 
 
