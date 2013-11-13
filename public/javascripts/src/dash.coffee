@@ -5,7 +5,8 @@ $ ->
 	hpSource =  $('#hp-stats').html()
 	xpSource =  $('#xp-stats').html()
 	levelSource = $('#char-level').html()
-
+	avatarSource = $('#avatar').html()
+	handleAvatar = Handlebars.compile(avatarSource)
 	handleLevel = Handlebars.compile(levelSource)
 	handlehp = Handlebars.compile(hpSource)
 	handlexp = Handlebars.compile(xpSource)
@@ -21,7 +22,7 @@ $ ->
 				result.push options.fn(ary[i])
 			--i
 		result.join ""
-
+	$avatar = $('.charAvatar')
 	$dash = $('#dashBoard')
 	$completed = $('#completedQuests')
 	$current = $('#currentQuests')
@@ -48,6 +49,7 @@ $ ->
 			$hpBar.html handlehp char
 			$xpBar.html handlexp char
 			$level.html handleLevel char
+			$avatar.html handleAvatar char
 			$path.html handlePath char
 			updateCharBars(char)
 			window.currentUser = char
@@ -72,7 +74,7 @@ $ ->
 				
 
 		dailyTimer = (user) ->
-			$('.daily').each () ->
+			$('.daily, .preDaily').each () ->
 				window.timer = false
 				currTime = moment().format('X')
 				issueTime = $(@).attr('data-time')

@@ -44,7 +44,7 @@ server = http.createServer(app)
 io = io.listen(server);
 
 server.listen app.get('port'), () ->
-  console.log 'Express server listening on port ' + app.get('port')
+	console.log 'Express server listening on port ' + app.get('port')
 
 MongoURI = process.env.MONGOLAB_URI ? 'mongodb://localhost/roguelife'
 mongoose.connect MongoURI
@@ -126,7 +126,7 @@ Character = mongoose.model 'Character', {
 
 # development only
 if 'development' == app.get('env') 
-  app.use express.errorHandler()
+	app.use express.errorHandler()
 
 userNotification = (char) ->
 	sendgrid.send {
@@ -219,17 +219,12 @@ app.post '/signup', (req, res) ->
 app.post '/chosenpath', app.isAuthenticated, (req, res) ->
 	console.log 'user', req.user
 	console.log 'BODY PATH', req.body.path
-	pushDaily = randomDaily(pathTasks.Dailies, data.user.path)
-	Character.findOneAndUpdate {username : data.user.username}, {$set : {preDaily : [{preDailyName : pushDaily, preDailyStart : moment().format('X'), finished : false}]}}, (err, char) ->
-		Character.findOneAndUpdate {username : req.user.username}, {path : req.body.path, avatar : req.body.path}, (err, char) ->
-			currentPath = char.path
-			dailyList = pathTasks.Dailies
-			pushDailyName = randomDaily( dailyList, currentPath )
-			pushDaily = {dailyName : pushDailyName, startDaily : moment().format('X')}
+	Character.findOneAndUpdate {username : req.user.username}, {path : req.body.path, avatar : req.body.path}, (err, char) ->
+		pushDailyName = randomDaily( pathTasks.Dailies, char.path )
+		Character.findOneAndUpdate {username : req.user.username}, {$set : {preDaily : [{preDailyName : pushDailyName, preDailyStart : moment().format('X'), finished : false}]}}, (err, char) ->
 			char['dailies'].push pushDaily
 			char.markModified('dailies')
 			char.save()
-
 			console.log 'CHAR!!!', char
 			if err
 				console.log 'error choosepath', err
