@@ -219,18 +219,20 @@ app.post '/signup', (req, res) ->
 app.post '/chosenpath', app.isAuthenticated, (req, res) ->
 	console.log 'user', req.user
 	console.log 'BODY PATH', req.body.path
-	Character.findOneAndUpdate {username : req.user.username}, {path : req.body.path}, (err, char) ->
-		currentPath = char.path
-		dailyList = pathTasks.Dailies
-		pushDailyName = randomDaily( dailyList, currentPath )
-		pushDaily = {dailyName : pushDailyName, startDaily : moment().format('X')}
-		char['dailies'].push pushDaily
-		char.markModified('dailies')
-		char.save()
+	pushDaily = randomDaily(pathTasks.Dailies, data.user.path)
+	Character.findOneAndUpdate {username : data.user.username}, {$set : {preDaily : [{preDailyName : pushDaily, preDailyStart : moment().format('X'), finished : false}]}}, (err, char) ->
+		Character.findOneAndUpdate {username : req.user.username}, {path : req.body.path, avatar : req.body.path}, (err, char) ->
+			currentPath = char.path
+			dailyList = pathTasks.Dailies
+			pushDailyName = randomDaily( dailyList, currentPath )
+			pushDaily = {dailyName : pushDailyName, startDaily : moment().format('X')}
+			char['dailies'].push pushDaily
+			char.markModified('dailies')
+			char.save()
 
-		console.log 'CHAR!!!', char
-		if err
-			console.log 'error choosepath', err
+			console.log 'CHAR!!!', char
+			if err
+				console.log 'error choosepath', err
 	res.send 'success!'
 	
 

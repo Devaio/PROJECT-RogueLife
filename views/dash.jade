@@ -7,6 +7,7 @@ block dash
 	#death
 		.deathTextArea.container
 			h2.deathText You Have Died...
+			image(src='/images/#{userCharacter.avatar}.png')
 			p.deathExplanation Daily tasks are important for more than leveling up, they keep you alive!
 				p Make sure you keep up with your dailies to survive!
 				p Your level and experience have been reset, better luck next time!
@@ -15,6 +16,8 @@ block dash
 	#dailyComplete
 		.dailyCompleteArea.container
 			h2.dailyCompleteText Victory!
+			if userCharacter.avatar
+				image(src='/images/#{userCharacter.avatar}.png')
 			p.dailyExplanation Daily tasks are important for more than leveling up, they keep you alive!
 				p Make sure you keep up with your dailies to survive!
 				p 
@@ -22,6 +25,7 @@ block dash
 				a Close
 	#charStats.row-fluid.container
 		.col-sm-1.col-xs-5.charAvatar
+			image(src='/images/#{userCharacter.avatar}.png')
 		.col-sm-1.col-xs-5.levelIndicator
 			p Level 
 			p.currentLevel #{userCharacter.level}

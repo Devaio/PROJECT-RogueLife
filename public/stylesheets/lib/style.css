@@ -275,10 +275,14 @@ body {
 }
 .pathDesc {
   position: relative;
-  top: 70%;
+  top: 40%;
   text-align: center;
   font-family: megapixelregular;
   font-size: 2.5em;
+}
+.pathImage {
+  position: relative;
+  left: 25%;
 }
 .addQuest,
 .addDaily {
@@ -346,7 +350,6 @@ body {
   text-align: center;
 }
 .charAvatar {
-  background-color: #f00;
   margin-right: 20px;
   height: 10px;
 }
