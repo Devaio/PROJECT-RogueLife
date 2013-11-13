@@ -80,7 +80,7 @@ $ ->
 				currTime = moment().format('X')
 				issueTime = $(@).attr('data-time')
 				wait = currTime - issueTime
-				if wait > 1
+				if wait > 86400
 					window.timer = true
 					$(@).attr('data-time', moment().format('X'))
 			if timer
