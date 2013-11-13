@@ -73,6 +73,7 @@
 body {
   font: 14px "Cambria", Helvetica, Arial, sans-serif;
   padding-bottom: 100px;
+  background-color: #65755d;
 }
 .navbar {
   padding: 5px 5px 0px 0px;
@@ -82,6 +83,7 @@ body {
   font-size: 2em;
 }
 #footer {
+  z-index: -1;
   position: fixed;
   margin-left: 0px;
   margin-right: 0px;
@@ -305,7 +307,7 @@ body {
   display: inline-block;
   width: 10px;
   height: 10px;
-  background-color: #008000;
+  background-color: #228b22;
 }
 .questTimer {
   display: inline-block;
