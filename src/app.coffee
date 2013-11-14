@@ -128,21 +128,37 @@ Character = mongoose.model 'Character', {
 if 'development' == app.get('env') 
 	app.use express.errorHandler()
 
-userNotification = (char) ->
-	sendgrid.send {
-		to : char.email,
-		from : 'admin@roguelife.herokuapp.com',
-		subject : 'Your character has low health!',
-		text : 'Greetings '+ char.username + '!\n Be careful!  Your character is running dangerously low on health.  Complete your daily tasks to avoid death!'
-	}, (err, json) ->
-		console.log 'JSON!!!:',json
-	if char.phone
-		client.sendMessage {
-			to : char.phone
-			from : '+18133585022',
-			body : 'Greetings '+ char.username + '!\n Be careful!  Your character is running dangerously low on health.  Complete your daily tasks to avoid death!'
-		}, (err, resData) ->
-			console.log resData
+userNotification = (char, hp) ->
+	if hp is 'low'
+		sendgrid.send {
+			to : char.email,
+			from : 'admin@roguelife.herokuapp.com',
+			subject : 'Your character has low health!',
+			text : 'Greetings '+ char.username + '!\n Be careful!  Your character is running dangerously low on health.  Complete your daily tasks to avoid death!'
+		}, (err, json) ->
+			console.log 'JSON!!!:',json
+		if char.phone
+			client.sendMessage {
+				to : char.phone
+				from : '+18133585022',
+				body : 'Greetings '+ char.username + '!\n Be careful!  Your character is running dangerously low on health.  Complete your daily tasks to avoid death!'
+			}, (err, resData) ->
+				console.log resData
+	else
+		sendgrid.send {
+			to : char.email,
+			from : 'admin@roguelife.herokuapp.com',
+			subject : 'Your character has low health!',
+			text : 'Greetings '+ char.username + '!\n It seems your lack of commitment has gotten your character killed! Your levels and experience have been reset.  Complete your daily tasks to avoid death!'
+		}, (err, json) ->
+			console.log 'JSON!!!:',json
+		if char.phone
+			client.sendMessage {
+				to : char.phone
+				from : '+18133585022',
+				body : 'Greetings '+ char.username + '!\n It seems your lack of commitment has gotten your character killed! Your levels and experience have been reset. Complete your daily tasks to avoid death!'
+			}, (err, resData) ->
+				console.log resData
 
 #BASIC ROUTES
 app.get '/', (req, res) ->
@@ -324,7 +340,7 @@ io.sockets.on 'connection', (socket) ->
 				daily.startPreDaily = moment().format('X')
 				daily.finished = false
 			char['hpPerc'] = (char.currentHealth / char.health) * 100
-			if char.hpPerc <= 50
+			if char.hpPerc <= 33 && char.hpPerc > 0
 				userNotification(char)
 			char.markModified 'preDaily'
 			char.markModified 'dailies'
