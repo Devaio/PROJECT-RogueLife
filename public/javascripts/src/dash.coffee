@@ -49,7 +49,7 @@ $ ->
 			$hpBar.html handlehp char
 			$xpBar.html handlexp char
 			$level.html handleLevel char
-			
+			$avatar.html handleAvatar char
 			$path.html handlePath char
 			updateCharBars(char)
 			window.currentUser = char
@@ -108,7 +108,7 @@ $ ->
 		console.log userCharacter
 		dashUpdater.updateDashboard(userCharacter)
 		dashUpdater.dailyTimer(userCharacter)
-		$avatar.html handleAvatar char
+		
 		window.currentUser = userCharacter # makes available for sockets
 
 
