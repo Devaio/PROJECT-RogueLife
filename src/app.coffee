@@ -148,7 +148,7 @@ userNotification = (char, hp) ->
 		sendgrid.send {
 			to : char.email,
 			from : 'admin@roguelife.herokuapp.com',
-			subject : 'Your character has low health!',
+			subject : 'Your character has died!',
 			text : 'Greetings '+ char.username + '!\n It seems your lack of commitment has gotten your character killed! Your levels and experience have been reset.  Complete your daily tasks to avoid death!'
 		}, (err, json) ->
 			console.log 'JSON!!!:',json
